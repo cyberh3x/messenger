@@ -1,5 +1,12 @@
+import ContextProvider from "context/provider";
+import AppRoot from "pages";
+
 function App() {
-  return <div>UFO Messenger</div>;
+  return (
+    <ContextProvider>
+      <AppRoot />
+    </ContextProvider>
+  );
 }
 
 export default App;
