@@ -1,5 +1,6 @@
 import ContextProvider from "context/provider";
 import AppRoot from "pages";
+import "styles/app.css";
 
 function App() {
   return (
