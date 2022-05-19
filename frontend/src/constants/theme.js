@@ -1,15 +1,14 @@
 export const theme = {
   palette: {
-    mode: "dark",
     primary: {
-      main: "#00efe6",
+      main: "#6f50cd",
     },
     secondary: {
-      main: "#01cf05",
+      main: "#09061e",
     },
   },
   typography: {
-    fontFamily: ["Vazir", "Lato"].join(", "),
+    fontFamily: ["Lato"].join(", "),
   },
   direction: "rtl",
 };
