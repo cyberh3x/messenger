@@ -12,7 +12,8 @@ function App() {
     render = () => <AppRoot />;
 
   useEffect(() => {
-    token ? verifyToken().then(() => setReady(true)) : setReady(true);
+    return () =>
+      token ? verifyToken().then(() => setReady(true)) : setReady(true);
   }, []);
 
   return ready && render();
