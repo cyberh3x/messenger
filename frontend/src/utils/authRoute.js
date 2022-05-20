@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { SIGN_IN } from "constants/routes";
 import useUser from "hooks/useUser";
+import { SIGN_IN } from "constants/routes";
 
 const AuthRoute = ({ redirectPath = SIGN_IN, children }) => {
   const { isLoggedIn } = useUser();

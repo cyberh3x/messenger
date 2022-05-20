@@ -10,8 +10,8 @@ router.post(
   async (req, res) =>
     await loginRepository
       .login(req.body, res)
-      .then((result) => res.status(result.status).json(result))
-      .catch((err) => res.status(err.status).json(err))
+      .then((result) => res.status(result.status || 200).json(result))
+      .catch((err) => res.status(err.status || 500).json(err))
 );
 
 router.post(
@@ -19,8 +19,8 @@ router.post(
   async (req, res) =>
     await registerRepository
       .register(req.body)
-      .then((result) => res.status(result.status).json(result))
-      .catch((err) => res.status(err.status).json(err))
+      .then((result) => res.status(result.status || 200).json(result))
+      .catch((err) => res.status(err.status || 500).json(err))
 );
 
 router.get(IDENTITY, verifyToken, (req, res) => res.status(200).json(req.user));
@@ -31,8 +31,8 @@ router.put(
   async (req, res) =>
     await logoutRepository
       .logout(req, res)
-      .then((result) => res.status(result.status).json(result))
-      .catch((error) => res.status(error.status).json(error))
+      .then((result) => res.status(result.status || 200).json(result))
+      .catch((err) => res.status(err.status || 500).json(error))
 );
 
 module.exports = router;

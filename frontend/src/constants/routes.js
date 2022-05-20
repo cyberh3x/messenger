@@ -5,4 +5,5 @@ export const API = "/api",
   IDENTITY = "/identity",
   LOGOUT = "/logout",
   HOME = "/",
-  SIGN_IN = "/sign-in";
+  SIGN_IN = "/sign-in",
+  SIGN_UP = "/sign-up";

@@ -7,6 +7,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import AlertBox from "components/alert";
 import useClasses from "hooks/useClasses";
 import { signInSchema } from "./schema";
+import { Link } from "react-router-dom";
+import { SIGN_UP } from "constants/routes";
 
 const styles = (theme) => ({
   cover: {
@@ -84,10 +86,17 @@ const SignIn = () => {
           </Grid>
         )}
 
-        <Grid item xs={12} mt={3} textAlign={"right"}>
-          <Button onClick={handleLogin} disabled={pending}>
-            Sign in
-          </Button>
+        <Grid item xs={12} mt={3}>
+          <Grid container>
+            <Grid item xs={6} justifyContent="center">
+              <Link to={SIGN_UP}>Register</Link>
+            </Grid>
+            <Grid item xs={6} textAlign={"right"}>
+              <Button onClick={handleLogin} disabled={pending}>
+                Sign in
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

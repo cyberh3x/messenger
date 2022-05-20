@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "context/auth/authProvider";
 import { HOME } from "constants/routes";
 import useUser from "hooks/useUser";
 

@@ -1,3 +1,5 @@
+const { encrypt } = require("./utils/encryption");
+
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }

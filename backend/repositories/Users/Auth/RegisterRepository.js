@@ -1,30 +1,42 @@
 const users = require("../../../models/users/Users"),
-  { encrypt } = require("../../../utils/encryption");
+  { encrypt } = require("../../../utils/encryption"),
+  registerSchema = require("../../../schema/auth/registerSchema");
 
 class RegisterRepository {
   constructor(model) {
     this.model = model;
   }
 
-  async register({ username, email, password }) {
-    const userExist = this.model.findOne({ username });
-    if (userExist)
-      return {
-        message: "Username exist",
-        status: 403,
-      };
-    const newUser = this.model({
-      username,
-      email,
-      password: encrypt(password),
-    });
-
-    try {
-      const savedUser = await newUser.save();
-      return savedUser;
-    } catch (error) {
-      return error;
-    }
+  async register(body) {
+    return registerSchema
+      .validate(body, { abortEarly: false })
+      .then(async ({ username, password }) => {
+        const userRegistered = await this.model.findOne({ username }).exec();
+        if (userRegistered)
+          throw {
+            message: "This username is already registered.",
+            status: 422,
+          };
+        else {
+          const newUser = this.model({
+            username,
+            password,
+          });
+          try {
+            await newUser.save();
+            return {
+              message: "Your account has been successfully registered.",
+              status: 200,
+            };
+          } catch (error) {
+            return error;
+          }
+        }
+      })
+      .catch((errors) => {
+        errors.status = 422;
+        return errors;
+      });
   }
 }
 

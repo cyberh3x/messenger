@@ -10,7 +10,6 @@ const verifyToken = (req, res, next) => {
   let token = req.cookies[TOKEN_KEY] ?? null;
   if (token) {
     token = `Bearer ${token}`;
-    console.log(token);
     jwt.verify(token.split(" ")[1], process.env.JWT_SEC, (err, user) => {
       if (err) res.status(unauthorizedStatus).json(errorMessage);
       req.user = user;
