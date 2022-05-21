@@ -1,7 +1,7 @@
-import React from "react";
+import AppLayout from "pages/layouts/app";
 
 const Home = () => {
-  return <div>Home</div>;
+  return <AppLayout>Home</AppLayout>;
 };
 
 export default Home;

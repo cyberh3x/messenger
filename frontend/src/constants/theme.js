@@ -6,6 +6,9 @@ export const theme = {
     secondary: {
       main: "#09061e",
     },
+    gray: {
+      main: "#ccc",
+    },
   },
   typography: {
     fontFamily: ["Lato"].join(", "),

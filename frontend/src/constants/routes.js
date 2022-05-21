@@ -6,4 +6,5 @@ export const API = "/api",
   LOGOUT = "/logout",
   HOME = "/",
   SIGN_IN = "/sign-in",
-  SIGN_UP = "/sign-up";
+  SIGN_UP = "/sign-up",
+  CONVERSATION = "/conversation/:id";
