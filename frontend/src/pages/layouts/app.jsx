@@ -34,7 +34,7 @@ const AppLayout = ({ children }) => {
         <Grid item xs={12} sm={6} md={4}>
           <Sidebar />
         </Grid>
-        <Grid item xs={12} sm={6} md={8} padding={3}>
+        <Grid item xs={12} sm={6} md={8}>
           {children}
         </Grid>
       </Grid>

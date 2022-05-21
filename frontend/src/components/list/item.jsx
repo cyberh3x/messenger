@@ -9,17 +9,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import useClasses from "hooks/useClasses";
 import Grid from "@mui/material/Grid";
 import Menu from "components/menu";
+import Online from "components/flags/online";
 
 const styles = (theme) => ({
-  onlineFlag: {
-    width: theme.spacing(1),
-    height: theme.spacing(1),
-    background: theme.palette.success.main,
-    borderRadius: "50%",
-    border: "2px solid white",
-    display: "block",
-    transform: "translate(30px, -12px)",
-  },
   listItem: {
     margin: theme.spacing(0, 2),
   },
@@ -46,20 +38,20 @@ const Item = ({
         }}
         key={id}
       >
-        <Link to={href}>
-          <Grid container>
-            <ListItemButton alignItems="flex-start">
-              <Grid item xs={2} sm={5} md={2}>
-                <ListItemAvatar style={{ position: "relative" }}>
-                  <div>
-                    <Avatar alt={name} src={avatar} />
-                    {isOnline && <span className={classes.onlineFlag}></span>}
-                  </div>
-                </ListItemAvatar>
-              </Grid>
-              <Grid item xs={10} sm={7} md={10}>
-                <Grid container>
-                  <Grid item xs={10}>
+        <Grid container>
+          <ListItemButton alignItems="flex-start">
+            <Grid item xs={2} sm={5} md={2}>
+              <ListItemAvatar style={{ position: "relative" }}>
+                <Avatar alt={name} src={avatar} />
+                {isOnline && (
+                  <Online style={{ transform: "translate(30px, -12px)" }} />
+                )}
+              </ListItemAvatar>
+            </Grid>
+            <Grid item xs={10} sm={7} md={10}>
+              <Grid container>
+                <Grid item xs={10}>
+                  <Link to={href}>
                     <ListItemText
                       className={classes.listItem}
                       primary={
@@ -83,17 +75,17 @@ const Item = ({
                         </Typography>
                       }
                     />
-                  </Grid>
-                  {menu.length > 0 && (
-                    <Grid item xs={2} textAlign="right">
-                      <Menu items={menu} />
-                    </Grid>
-                  )}
+                  </Link>
                 </Grid>
               </Grid>
-            </ListItemButton>
-          </Grid>
-        </Link>
+            </Grid>
+          </ListItemButton>
+          {menu.length > 0 && (
+            <Grid item xs={2} textAlign="right" alignSelf={"center"}>
+              <Menu items={menu} />
+            </Grid>
+          )}
+        </Grid>
       </List>
     </Grid>
   );
