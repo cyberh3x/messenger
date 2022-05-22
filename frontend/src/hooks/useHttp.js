@@ -20,7 +20,7 @@ const useHttp = () => {
   useEffect(() => {
     return () => {
       axios.interceptors.request.use(function (config) {
-        config.baseURL = process.env.REACT_APP_DEV_API_ENDPOINT;
+        config.baseURL = process.env.REACT_APP_API_ENDPOINT;
         const token = getCookie(TOKEN_KEY);
         if (token) config.withCredentials = true;
         return config;

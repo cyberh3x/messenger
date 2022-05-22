@@ -1,5 +1,3 @@
-const { encrypt } = require("./utils/encryption");
-
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -8,11 +6,12 @@ const express = require("express"),
   mongoose = require("mongoose"),
   authRoutes = require("./routes/auth"),
   createError = require("http-errors"),
-  bodyParser = require("body-parser"),
   path = require("path"),
   cookieParser = require("cookie-parser"),
   logger = require("morgan"),
   cors = require("cors"),
+  { createServer } = require("http"),
+  { Server } = require("socket.io"),
   { API, AUTH } = require("./constants/routes");
 
 const _env = process.env;
@@ -53,6 +52,26 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
   res.render("error");
 });
+
+// Socket.io
+const httpServer = createServer();
+httpServer.listen(4000);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("connected");
+  socket.on("new:message", (message) => {
+    socket.broadcast.emit("chat-message", { message });
+  });
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("user-disconnected");
+  });
+});
+
 app.listen(_env.PORT || 5000, () => {
   console.log("Backend server is running!");
 });
