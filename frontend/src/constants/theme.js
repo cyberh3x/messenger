@@ -1,10 +1,13 @@
 export const theme = {
   palette: {
     primary: {
-      main: "#6f50cd",
+      main: "#262626",
     },
     secondary: {
-      main: "#09061e",
+      main: "#44d7b6",
+    },
+    gray: {
+      main: "#ccc",
     },
   },
   typography: {
