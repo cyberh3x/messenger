@@ -1,15 +1,12 @@
-import * as React from "react";
+import { useState } from "react";
 import MenuComponent from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "components/button/iconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ClickAwayListener } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
-const Menu = ({
-  items = [],
-  icon = <MoreVertIcon style={{ color: "#fff" }} />,
-}) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+const Menu = ({ items = [], icon = <MoreVertIcon /> }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

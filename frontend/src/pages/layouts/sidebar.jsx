@@ -1,102 +1,76 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import Grid from "@mui/material/Grid";
-import Typography from "components/typography";
+import { useMessenger } from "context/messenger/messengerProvider";
 import useClasses from "hooks/useClasses";
-import AddIcon from "@mui/icons-material/Add";
-import IconButton from "components/button/iconButton";
-import Tooltip from "@mui/material/Tooltip";
+import Grid from "@mui/material/Grid";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/system/Box";
 import SidebarTabs from "./tabs";
-import List from "components/list";
+import IconButton from "components/button/iconButton";
+import { HOME } from "constants/routes";
+import { CHANGE_TAB } from "constants/actionsTypes";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Menu from "components/menu";
-import { CONVERSATION, HOME } from "constants/routes";
 
 const styles = (theme) => ({
   root: {
     background: theme.palette.primary.main,
-    height: "100vh",
-    padding: theme.spacing(3),
+    borderRadius: theme.spacing(0, 3, 3, 0),
+    position: "fixed",
+    transition: `${theme.transitions.easing.sharp} ${theme.transitions.duration.complex}s`,
+    height: "100%",
+    zIndex: 1,
+  },
+  sidebarDrawerHandler: {
+    position: "absolute !important",
+    right: 0,
+    top: "50%",
+    background: "#fff !important",
+    boxShadow:
+      "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+  },
+  avatar: {
+    margin: theme.spacing(3, "auto"),
   },
 });
 
-const menuItems = [
-    {
-      id: 1,
-      label: "Profile",
-      props: {
-        onClick: () => console.log("Profile"),
-      },
-    },
-    {
-      id: 2,
-      label: "Logout",
-      props: {
-        onClick: () => console.log("Logout"),
-      },
-    },
-  ],
-  conversations = [
-    {
-      id: 1,
-      name: "Sajjad",
-      isOnline: false,
-      text: "Hello Sajjad",
-      menu: [
-        {
-          id: 1,
-          label: "Delete Conversation",
-          props: {
-            onClick: () => console.log("Delete Conversation"),
-          },
-        },
-      ],
-      href: CONVERSATION.replace(":id", 1),
-    },
-    {
-      id: 2,
-      name: "Ali",
-      isOnline: true,
-      text: "Hello Ali",
-      href: CONVERSATION.replace(":id", 2),
-    },
-  ];
-
-const Sidebar = () => {
+const Sidebar = ({}) => {
   const classes = useClasses(styles),
-    [tab, setTab] = useState(0),
-    handleChange = (event, newValue) => {
-      setTab(newValue);
-    };
-
+    [sidebarIsOpen, setSidebarIsOpen] = useState(true),
+    [{ tab }, dispatch] = useMessenger(),
+    handleChange = (event, newValue) =>
+      dispatch({ type: CHANGE_TAB, payload: newValue }),
+    handleSidebar = () => setSidebarIsOpen(!sidebarIsOpen);
   return (
-    <Grid item xs={12} className={classes.root}>
-      <Grid container>
-        <Grid item xs={12} md={6}>
-          <Link to={HOME}>
-            <Typography variant="h6" color="white">
-              <strong>UFO Messenger</strong>
-            </Typography>
-          </Link>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Grid container justifyContent={"end"}>
-            <IconButton color="default">
-              <Tooltip title="Add contact">
-                <AddIcon style={{ color: "#fff" }} />
-              </Tooltip>
-            </IconButton>
-            <Menu items={menuItems} />
+    <div className={classes.root}>
+      {sidebarIsOpen ? (
+        <div>
+          <Grid item xs={12}>
+            <Link to={HOME}>
+              <Avatar className={classes.avatar} />
+            </Link>
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid container justifyContent={"center"}>
-        <SidebarTabs handleChange={handleChange} tab={tab} />
-      </Grid>
-      <hr />
-      {tab == 0 && <List items={conversations} />}
-      {tab == 1 && <h1>Groups</h1>}
-      {tab == 2 && <h1>Contacts</h1>}
-    </Grid>
+          <Box my={3}>
+            <hr />
+          </Box>
+          <SidebarTabs handleChange={handleChange} tab={tab} />
+        </div>
+      ) : (
+        <></>
+      )}
+      <IconButton
+        className={classes.sidebarDrawerHandler}
+        onClick={handleSidebar}
+        style={
+          sidebarIsOpen
+            ? { transform: "translate(20px, -50%)" }
+            : { transform: "translate(50px, -50%)" }
+        }
+      >
+        {sidebarIsOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+      </IconButton>
+    </div>
   );
 };
 
