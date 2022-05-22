@@ -6,6 +6,7 @@ import Typography from "components/typography";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import IconButton from "components/button/iconButton";
 import SendIcon from "@mui/icons-material/Send";
+import { useRef } from "react";
 
 const styles = (theme) => ({
   message: {
@@ -33,6 +34,9 @@ const styles = (theme) => ({
       border: 0,
       background: "transparent",
       width: "85%",
+      [theme.breakpoints.down("sm")]: {
+        width: "65%",
+      },
     },
     "& input:focus": {
       outlineWidth: 0,
@@ -42,10 +46,12 @@ const styles = (theme) => ({
 
 const Body = () => {
   const classes = useClasses(styles),
+    fileInputRef = useRef(null),
     handleSendMessage = (e) => {
       e.preventDefault();
       console.log("Send Message...");
-    };
+    },
+    handleFileBrowser = () => fileInputRef.current.click();
   return (
     <Grid
       item
@@ -83,7 +89,7 @@ const Body = () => {
           <Grid item xs={11}>
             <div className={`${classes.message} ${classes.user}`}>
               <Typography>Message Content</Typography>
-              <Box textAlign={"right"} mt={1}>
+              <Box textAlign={"right"} mt={1} style={{ direction: "ltr" }}>
                 <Typography variant="subtitle2">
                   <i>12:53 PM</i>
                 </Typography>
@@ -102,9 +108,14 @@ const Body = () => {
           <Grid container alignItems="baseline">
             <Box mr={1}>
               <Grid item xs={1}>
-                <IconButton>
+                <IconButton onClick={handleFileBrowser}>
                   <AttachmentIcon />
                 </IconButton>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                />
               </Grid>
             </Box>
             <input type="text" placeholder="Type your message..." />

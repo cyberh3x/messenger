@@ -17,7 +17,7 @@ const styles = (theme) => ({
 
 const Item = ({
   id,
-  name,
+  username,
   text = "",
   avatar = null,
   isOnline = false,
@@ -40,7 +40,7 @@ const Item = ({
             <ListItemButton alignItems="flex-start">
               <Grid item xs={2} sm={5} md={2}>
                 <ListItemAvatar style={{ position: "relative" }}>
-                  <Avatar alt={name} src={avatar} />
+                  <Avatar alt={username} src={avatar} />
                   {isOnline && (
                     <Online style={{ transform: "translate(30px, -12px)" }} />
                   )}
@@ -54,7 +54,7 @@ const Item = ({
                       primary={
                         <React.Fragment>
                           <Typography component="span" variant="body2">
-                            {name}
+                            {username}
                           </Typography>
                         </React.Fragment>
                       }

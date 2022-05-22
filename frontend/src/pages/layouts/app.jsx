@@ -47,7 +47,7 @@ const menuItems = [
   conversations = [
     {
       id: 1,
-      name: "Sajjad",
+      username: "Sajjad",
       isOnline: false,
       text: "Hello Sajjad",
       menu: [
@@ -63,7 +63,7 @@ const menuItems = [
     },
     {
       id: 2,
-      name: "Ali",
+      username: "Ali",
       isOnline: true,
       text: "Hello Ali",
       href: CONVERSATION.replace(":id", 2),
@@ -84,8 +84,8 @@ const AppLayout = ({ children }) => {
               <Grid item xs={12} md={4}>
                 <Box bgcolor={"white"} borderRadius={3} boxShadow={1}>
                   {tab == 0 && <List items={conversations} />}
-                  {tab == 1 && <h1>1</h1>}
-                  {tab == 2 && <h1>2</h1>}
+                  {tab == 1 && tab}
+                  {tab == 2 && tab}
                 </Box>
               </Grid>
               <Grid item xs={12} md={8}>
