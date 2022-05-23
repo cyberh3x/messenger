@@ -7,12 +7,25 @@ import Header from "./header";
 
 const Conversation = () => {
   const { id } = useParams(),
-    [socket, setSocket] = useState(null);
+    [socket, setSocket] = useState(),
+    getMessages = () => socket.emit("get:room", id),
+    onGetMessageList = () =>
+      socket.on("room:ready", (room) => console.log(room));
+
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
-    setSocket(socket);
-    return () => socket.close();
-  }, [setSocket]);
+    const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
+    setSocket(socketIo);
+    return () => {
+      socketIo.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      getMessages();
+      onGetMessageList();
+    }
+  }, [socket]);
 
   return (
     <AppLayout>

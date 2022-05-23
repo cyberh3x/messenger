@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { TOKEN_KEY } = require("../../../constants");
+const jwt = require("jsonwebtoken"),
+  usersModel = require("../../../models/users/Users"),
+  { TOKEN_KEY } = require("../../../constants");
 
 const verifyToken = (req, res, next) => {
   const unauthorizedStatus = 401,
@@ -10,9 +11,9 @@ const verifyToken = (req, res, next) => {
   let token = req.cookies[TOKEN_KEY] ?? null;
   if (token) {
     token = `Bearer ${token}`;
-    jwt.verify(token.split(" ")[1], process.env.JWT_SEC, (err, user) => {
+    jwt.verify(token.split(" ")[1], process.env.JWT_SEC, async (err, user) => {
       if (err) res.status(unauthorizedStatus).json(errorMessage);
-      req.user = user;
+      req.user = await usersModel.findById(user._id).exec();
       next();
     });
   } else {

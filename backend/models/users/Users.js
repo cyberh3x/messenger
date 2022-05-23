@@ -15,6 +15,10 @@ const mongoose = require("mongoose"),
         select: false,
         set: onSetPassword,
       },
+      contacts: {
+        type: Array,
+        default: [],
+      },
     },
     { timestamps: true }
   );

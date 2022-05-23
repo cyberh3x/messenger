@@ -6,6 +6,7 @@ import List from "components/list";
 import Sidebar from "./sidebar";
 import { CONVERSATION } from "constants/routes";
 import { Container } from "@mui/material";
+import Contacts from "components/contacts";
 
 const styles = (theme) => ({
   root: {
@@ -82,9 +83,9 @@ const AppLayout = ({ children }) => {
           <Container maxWidth="xl">
             <Grid container spacing={3} px={3}>
               <Grid item xs={12} md={4}>
-                <Box bgcolor={"white"} borderRadius={3} boxShadow={1}>
+                <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
                   {tab == 0 && <List items={conversations} />}
-                  {tab == 1 && tab}
+                  {tab == 1 && <Contacts />}
                   {tab == 2 && tab}
                 </Box>
               </Grid>

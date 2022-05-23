@@ -7,4 +7,6 @@ export const API = "/api",
   HOME = "/",
   SIGN_IN = "/sign-in",
   SIGN_UP = "/sign-up",
-  CONVERSATION = "/conversation/:id";
+  CONVERSATION = "/conversation/:id",
+  USER = "/user",
+  CONTACTS = "/contacts";

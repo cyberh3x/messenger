@@ -1,4 +1,4 @@
-import { CHANGE_TAB } from "constants/actionsTypes";
+import { CHANGE_TAB, STORE_CONTACTS } from "constants/actionsTypes";
 
 const MessengerProvider = (state, { type, payload }) => {
   switch (type) {
@@ -6,6 +6,11 @@ const MessengerProvider = (state, { type, payload }) => {
       return {
         ...state,
         tab: payload,
+      };
+    case STORE_CONTACTS:
+      return {
+        ...state,
+        contacts: payload,
       };
     default:
       return {
