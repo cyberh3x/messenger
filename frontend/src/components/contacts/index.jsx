@@ -29,7 +29,11 @@ const Contacts = () => {
         <Typography>Lading contacts...</Typography>
       ) : (
         <Grid item xs={12}>
-          <List items={contacts} />
+          {contacts.length ? (
+            <List items={contacts} />
+          ) : (
+            <Typography>No contacts found.</Typography>
+          )}
         </Grid>
       )}
       <AddContact />

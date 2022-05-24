@@ -24,7 +24,6 @@ class ContactRepository {
   async create({ body: { username }, user }) {
     try {
       const contact = await this.getContact(username, "username");
-      console.log(contact);
       await users
         .findOneAndUpdate(
           { _id: user.id },
@@ -33,7 +32,7 @@ class ContactRepository {
         )
         .exec();
       return {
-        message: "Contact created successfully.",
+        message: "Contact added successfully.",
         contact,
         status: 200,
       };
