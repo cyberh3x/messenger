@@ -4,9 +4,10 @@ import Grid from "@mui/material/Grid";
 import Button from "components/button";
 import Typography from "components/typography";
 import List from "components/list";
+import AddContact from "./add";
 
 const Contacts = () => {
-  const { contacts, get, pending } = useContacts();
+  const { contacts, get, pending, handleToggleAddDialog } = useContacts();
   useEffect(() => {
     return () => get();
   }, []);
@@ -18,7 +19,9 @@ const Contacts = () => {
           <Typography variant="h5">Contacts</Typography>
         </Grid>
         <Grid item xs={6} textAlign="right">
-          <Button color="primary">Add</Button>
+          <Button color="primary" onClick={handleToggleAddDialog}>
+            Add
+          </Button>
         </Grid>
       </Grid>
       <hr />
@@ -29,6 +32,7 @@ const Contacts = () => {
           <List items={contacts} />
         </Grid>
       )}
+      <AddContact />
     </Grid>
   );
 };

@@ -1,4 +1,9 @@
-import { CHANGE_TAB, STORE_CONTACTS } from "constants/actionsTypes";
+import {
+  ADD_TO_CONTACTS,
+  CHANGE_TAB,
+  STORE_CONTACTS,
+  TOGGLE_ADD_CONTACT_DIALOG,
+} from "constants/actionsTypes";
 
 const MessengerProvider = (state, { type, payload }) => {
   switch (type) {
@@ -11,6 +16,16 @@ const MessengerProvider = (state, { type, payload }) => {
       return {
         ...state,
         contacts: payload,
+      };
+    case ADD_TO_CONTACTS:
+      return {
+        ...state,
+        contacts: [...state.contacts, payload],
+      };
+    case TOGGLE_ADD_CONTACT_DIALOG:
+      return {
+        ...state,
+        addContactDialogIsOpen: !state.addContactDialogIsOpen,
       };
     default:
       return {
