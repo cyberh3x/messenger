@@ -4,13 +4,22 @@ import ThemeProvider from "@mui/system/ThemeProvider";
 import AuthRoute from "utils/authRoute";
 import Home from "./home";
 import { theme } from "constants/theme";
-import { CONVERSATION, HOME, SIGN_IN, SIGN_UP } from "constants/routes";
+import {
+  CONTACTS,
+  CONVERSATION,
+  CONVERSATIONS,
+  HOME,
+  SIGN_IN,
+  SIGN_UP,
+} from "constants/routes";
 import GuestRoute from "utils/guestRoute";
 import SignIn from "./auth/signIn";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SignUp from "./auth/signUp";
 import Conversation from "./conversation";
+import Contacts from "./contacts";
+import Conversations from "./conversations";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme);
@@ -40,6 +49,22 @@ const AppRoot = () => {
             <GuestRoute>
               <SignUp />
             </GuestRoute>
+          }
+        />
+        <Route
+          path={CONTACTS}
+          element={
+            <AuthRoute>
+              <Contacts />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path={CONVERSATIONS}
+          element={
+            <AuthRoute>
+              <Conversations />
+            </AuthRoute>
           }
         />
         <Route

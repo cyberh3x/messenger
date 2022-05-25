@@ -1,3 +1,4 @@
+import { Fragment, useEffect, useRef, useState } from "react";
 import useClasses from "hooks/useClasses";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -5,10 +6,14 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "components/typography";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import IconButton from "components/button/iconButton";
+import useRoom from "hooks/useRoom";
+import useUser from "hooks/useUser";
 import SendIcon from "@mui/icons-material/Send";
-import { useRef } from "react";
 
 const styles = (theme) => ({
+  root: {
+    overflowY: "scroll",
+  },
   message: {
     padding: theme.spacing(2),
     borderRadius: theme.spacing(2),
@@ -24,8 +29,6 @@ const styles = (theme) => ({
     color: theme.palette.background.default,
   },
   inputContainer: {
-    position: "absolute",
-    bottom: theme.spacing(2),
     background: theme.palette.gray.main,
     borderRadius: "50px",
     width: "95%",
@@ -44,66 +47,112 @@ const styles = (theme) => ({
   },
 });
 
-const Body = () => {
+const Body = ({ socket }) => {
   const classes = useClasses(styles),
+    [message, setMessage] = useState(""),
+    { room, updateConversations } = useRoom(),
+    { conversations } = room,
+    { user } = useUser(),
+    rootRef = useRef(null),
     fileInputRef = useRef(null),
+    messageInputRef = useRef(null),
     handleSendMessage = (e) => {
       e.preventDefault();
-      console.log("Send Message...");
+      socket.emit("new:message", {
+        room,
+        message,
+        user,
+      });
+      setMessage("");
+      setTimeout(scrollToBottom, 100);
     },
-    handleFileBrowser = () => fileInputRef.current.click();
+    handleMessage = ({ target: { value } }) => setMessage(value),
+    handleFileBrowser = () => fileInputRef.current.click(),
+    scrollToBottom = () => {
+      const topPos = rootRef.current.scrollHeight;
+      rootRef.current.scrollTop = topPos;
+    };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("message:saved", ({ room }) => {
+        console.log(room);
+        updateConversations(room.conversations);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    setTimeout(scrollToBottom, 500);
+  }, []);
+
   return (
     <Grid
       item
       xs={12}
       bgcolor="white"
       padding={2}
-      height="100%"
+      height="500px"
       mt={1}
       borderRadius={3}
       boxShadow={1}
       position="relative"
+      className={classes.root}
+      ref={rootRef}
     >
-      <Grid item xs={12}>
-        <Grid container>
-          <Grid item xs={1} alignSelf="end">
-            <Avatar />
-          </Grid>
-          <Grid item xs={11}>
-            <div className={`${classes.message} ${classes.audience}`}>
-              <Typography>Message Content</Typography>
-              <Box textAlign={"right"} mt={1}>
-                <Typography variant="subtitle2">
-                  <i>12:53 PM</i>
-                </Typography>
-              </Box>
-            </div>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} style={{ direction: "rtl" }} my={3}>
-        <Grid container>
-          <Grid item xs={1} alignSelf="end">
-            <Avatar />
-          </Grid>
-          <Grid item xs={11}>
-            <div className={`${classes.message} ${classes.user}`}>
-              <Typography>Message Content</Typography>
-              <Box textAlign={"right"} mt={1} style={{ direction: "ltr" }}>
-                <Typography variant="subtitle2">
-                  <i>12:53 PM</i>
-                </Typography>
-              </Box>
-            </div>
-          </Grid>
-        </Grid>
-      </Grid>
+      {conversations ? (
+        <Fragment>
+          {conversations.map(
+            ({
+              _id,
+              senderId,
+              receiverId,
+              message,
+              replyTo,
+              status,
+              createdAt,
+              updatedAt,
+            }) => (
+              <Grid
+                item
+                xs={12}
+                style={{ direction: user._id == senderId ? "rtl" : "ltr" }}
+                key={_id}
+                my={3}
+              >
+                <Grid container>
+                  <Grid item xs={1} alignSelf="end">
+                    <Avatar />
+                  </Grid>
+                  <Grid item xs={11}>
+                    <div
+                      className={`${classes.message} ${
+                        user._id === senderId ? classes.user : classes.audience
+                      }`}
+                    >
+                      <Typography>{message}</Typography>
+                      <Box textAlign={"right"} mt={1}>
+                        <Typography variant="subtitle2">
+                          <i>{createdAt.toString()}</i>
+                        </Typography>
+                      </Box>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+            )
+          )}
+        </Fragment>
+      ) : (
+        <></>
+      )}
       <form onSubmit={handleSendMessage}>
         <Grid
           item
           xs={12}
           className={classes.inputContainer}
           bgcolor="whitesmoke"
+          mx={"auto"}
         >
           <Grid container alignItems="baseline">
             <Box mr={1}>
@@ -118,19 +167,13 @@ const Body = () => {
                 />
               </Grid>
             </Box>
-            <input type="text" placeholder="Type your message..." />
-            <Box
-              boxShadow={1}
-              position="absolute"
-              right={1}
-              top={-8}
-              bgcolor="primary.main"
-              borderRadius="50px"
-            >
-              <IconButton type="submit">
-                <SendIcon fontSize="large" style={{ color: "#fff" }} />
-              </IconButton>
-            </Box>
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={message}
+              onChange={handleMessage}
+              ref={messageInputRef}
+            />
           </Grid>
         </Grid>
       </form>

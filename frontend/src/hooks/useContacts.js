@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMessenger } from "context/messenger/messengerProvider";
 import useHttp from "./useHttp";
-import { CONTACTS, USER } from "constants/routes";
+import { CONTACTS, CONVERSATION, USER } from "constants/routes";
 import {
   ADD_TO_CONTACTS,
   STORE_CONTACTS,
@@ -17,7 +17,13 @@ const useContacts = () => {
     get = async () => {
       setPending(true);
       await _get(`${USER}${CONTACTS}`)
-        .then(({ data }) => dispatch({ type: STORE_CONTACTS, payload: data }))
+        .then(({ data }) => {
+          data = data.map((contact) => ({
+            ...contact,
+            href: CONVERSATION.replace(":id", contact._id),
+          }));
+          dispatch({ type: STORE_CONTACTS, payload: data });
+        })
         .finally(() => setPending(false));
     },
     create = async (username) => {

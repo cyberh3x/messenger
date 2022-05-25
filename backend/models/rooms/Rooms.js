@@ -2,16 +2,12 @@ const { generate } = require("../../utils/uuid"),
   mongoose = require("mongoose"),
   ConversationsSchema = new mongoose.Schema(
     {
-      id: {
-        type: Number,
-        default: generate(),
-      },
       senderId: {
-        type: Number,
+        type: String,
         required: true,
       },
       receiverId: {
-        type: Number,
+        type: String,
       },
       message: {
         type: String,
@@ -21,18 +17,22 @@ const { generate } = require("../../utils/uuid"),
         type: String,
         default: null,
       },
+      status: {
+        type: Number,
+        default: 0,
+      },
     },
     { timestamps: true }
   ),
   RoomsSchema = new mongoose.Schema(
     {
       userId: {
-        type: Number,
+        type: String,
         required: true,
         index: true,
       },
       audienceId: {
-        type: Number,
+        type: String,
         required: true,
         index: true,
       },

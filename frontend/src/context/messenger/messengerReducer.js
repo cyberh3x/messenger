@@ -2,9 +2,10 @@ import {
   ADD_TO_CONTACTS,
   CHANGE_TAB,
   STORE_CONTACTS,
+  STORE_ROOM,
   TOGGLE_ADD_CONTACT_DIALOG,
+  UPDATE_CONVERSATIONS,
 } from "constants/actionsTypes";
-import { CONVERSATION } from "constants/routes";
 
 const MessengerProvider = (state, { type, payload }) => {
   switch (type) {
@@ -14,10 +15,6 @@ const MessengerProvider = (state, { type, payload }) => {
         tab: payload,
       };
     case STORE_CONTACTS:
-      payload = payload.map((contact) => ({
-        ...contact,
-        href: CONVERSATION.replace(":id", contact._id),
-      }));
       return {
         ...state,
         contacts: payload,
@@ -31,6 +28,19 @@ const MessengerProvider = (state, { type, payload }) => {
       return {
         ...state,
         addContactDialogIsOpen: !state.addContactDialogIsOpen,
+      };
+    case STORE_ROOM:
+      return {
+        ...state,
+        room: payload,
+      };
+    case UPDATE_CONVERSATIONS:
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          conversations: payload,
+        },
       };
     default:
       return {

@@ -1,5 +1,3 @@
-const RoomsRepository = require("./repositories/Rooms/RoomsRepository");
-
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -15,9 +13,10 @@ const express = require("express"),
   cors = require("cors"),
   { createServer } = require("http"),
   { Server } = require("socket.io"),
-  { API, AUTH, USER } = require("./constants/routes");
-
-const _env = process.env;
+  { API, AUTH, USER } = require("./constants/routes"),
+  RoomsRepository = require("./repositories/Rooms/RoomsRepository"),
+  ConversationsRepository = require("./repositories/Conversations/ConversationsRepository"),
+  _env = process.env;
 
 mongoose
   .connect(_env.MONGO_URL, {
@@ -70,21 +69,32 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("connected");
-  socket.on("get:room", async (roomId) => {
-    console.log(roomId);
+  socket.on("get:room", async ({ userId, audienceId }) => {
     const repository = RoomsRepository;
     await repository
-      .get(roomId)
-      .then((room) =>
+      .get(userId, audienceId)
+      .then((room) => {
+        socket.join(room._id);
+        console.log(room);
         socket.emit("room:ready", {
-          id: roomId,
+          message: "Room is ready for conversation.",
           room,
+          status: 200,
+        });
+      })
+      .catch((error) =>
+        socket.emit("room:notReady", {
+          message: "Room is not ready for conversation.",
+          status: 422,
+          error,
         })
-      )
-      .catch((error) => console.log(error));
+      );
   });
-  socket.on("new:message", (message) => {
-    socket.emit("chat-message", { message });
+  socket.on("new:message", async ({ room, message, user }) => {
+    const repository = ConversationsRepository;
+    await repository
+      .create(room, message, user)
+      .then((room) => socket.local.emit("message:saved", { room }));
   });
   socket.on("disconnect", () => {
     console.log("disconnected");
