@@ -5,28 +5,27 @@ import AppLayout from "pages/layouts/app";
 import Body from "./body";
 import Header from "./header";
 import useUser from "hooks/useUser";
-import useRoom from "hooks/useRoom";
+import useRoom from "hooks/useConversations";
 
 const Conversation = () => {
   const { id } = useParams(),
-    [socket, setSocket] = useState(),
     {
       user: { _id },
     } = useUser(),
-    { store } = useRoom(),
+    { storeRoom, storeSocket, closeSocket, socket } = useRoom(),
     getMessages = () =>
       socket.emit("get:room", { userId: _id, audienceId: id }),
-    onGetMessageList = () => socket.on("room:ready", ({ room }) => store(room));
+    onGetMessageList = () =>
+      socket.on("room:ready", ({ room }) => storeRoom(room));
 
   useEffect(() => {
     const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
-    setSocket(socketIo);
-    return () => socketIo.close();
+    storeSocket(socketIo);
+    return closeSocket;
   }, []);
 
   useEffect(() => {
     if (socket) {
-      getMessages();
       onGetMessageList();
     }
   }, [socket]);
@@ -34,7 +33,7 @@ const Conversation = () => {
   return (
     <AppLayout>
       <Header />
-      <Body socket={socket} userId={_id} audienceId={id} />
+      <Body />
     </AppLayout>
   );
 };

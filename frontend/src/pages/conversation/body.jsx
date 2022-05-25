@@ -6,7 +6,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "components/typography";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import IconButton from "components/button/iconButton";
-import useRoom from "hooks/useRoom";
+import useRoom from "hooks/useConversations";
 import useUser from "hooks/useUser";
 import SendIcon from "@mui/icons-material/Send";
 

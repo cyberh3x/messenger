@@ -1,11 +1,11 @@
-const users = require("../../models/users/Users");
+const users = require("../../models/users/Users"),
+  rooms = require("../../models/rooms/Rooms");
 
 class ContactRepository {
   async get({ user }) {
+    const contactIds = user.contacts.map((item) => item.contactId);
     try {
-      const contactList = await users
-        .find({ _id: { $in: user.contacts } })
-        .exec();
+      const contactList = await users.find({ _id: { $in: contactIds } }).exec();
       return contactList;
     } catch (error) {
       return error;
@@ -23,19 +23,40 @@ class ContactRepository {
 
   async create({ body: { username }, user }) {
     try {
-      const contact = await this.getContact(username, "username");
-      await users
-        .findOneAndUpdate(
-          { _id: user.id },
-          { $addToSet: { contacts: contact._id } },
-          { new: true }
-        )
-        .exec();
-      return {
-        message: "Contact added successfully.",
-        contact,
-        status: 200,
-      };
+      const contact = await this.getContact(username, "username"),
+        contactExist = await users
+          .findOne({
+            _id: user._id,
+            contacts: { $elemMatch: { contactId: contact._id } },
+          })
+          .exec();
+      if (!contactExist) {
+        const newRoom = await new rooms({ userId: user._id }).save();
+        await users
+          .findOneAndUpdate(
+            { _id: user.id },
+            {
+              $addToSet: {
+                contacts: {
+                  contactId: contact._id,
+                  roomId: newRoom._id,
+                },
+              },
+            },
+            { new: true }
+          )
+          .exec();
+        return {
+          message: "Contact added successfully.",
+          contact,
+          roomId: newRoom._id,
+          status: 200,
+        };
+      } else
+        return {
+          message: "Contact already exist.",
+          status: 201,
+        };
     } catch (error) {
       return error;
     }

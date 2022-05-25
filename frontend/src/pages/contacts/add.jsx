@@ -1,28 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useUser from "hooks/useUser";
 import Grid from "@mui/material/Grid";
 import Dialog from "components/dialog";
 import TextField from "components/form/textField";
-import useContacts from "hooks/useContacts";
 import AlertBox from "components/alert";
 import { addSchema } from "./schema";
 
 const AddContact = () => {
   const [username, setUsername] = useState(""),
     [errors, setErrors] = useState({}),
-    {
-      addContactDialogIsOpen,
-      handleToggleAddDialog,
-      create,
-      pending,
-      generate,
-    } = useContacts(),
+    { addContact, addContactDialogIsOpen, handleToggleAddDialog, pending } =
+      useUser(),
     handleUsername = ({ target: { value } }) => setUsername(value),
     handleSubmit = async (e) => {
       e.preventDefault();
       await addSchema
         .validate({ username })
         .then(() => {
-          create(username)
+          addContact(username)
             .then(() => {
               setErrors({});
               setUsername("");
@@ -33,6 +28,11 @@ const AddContact = () => {
         .catch(storeErrors);
     },
     storeErrors = (errors) => setErrors(errors);
+
+  useEffect(() => {
+    console.log(addContactDialogIsOpen);
+  }, [addContactDialogIsOpen]);
+
   return (
     <Dialog
       open={addContactDialogIsOpen}

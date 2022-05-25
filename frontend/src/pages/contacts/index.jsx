@@ -1,14 +1,18 @@
 import { useEffect } from "react";
-import useContacts from "hooks/useContacts";
 import Grid from "@mui/material/Grid";
 import Button from "components/button";
 import Typography from "components/typography";
 import List from "components/list";
 import AddContact from "./add";
 import AppLayout from "pages/layouts/app";
+import useUser from "hooks/useUser";
 
 const Contacts = () => {
-  const { contacts, get, pending, handleToggleAddDialog } = useContacts(),
+  const {
+      handleToggleAddDialog,
+      user: { contacts },
+      pending,
+    } = useUser(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -36,9 +40,6 @@ const Contacts = () => {
         <AddContact />
       </Grid>
     );
-  useEffect(() => {
-    return () => get();
-  }, []);
 
   return <AppLayout sidebar={<Sidebar />}></AppLayout>;
 };

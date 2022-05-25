@@ -31,11 +31,6 @@ const { generate } = require("../../utils/uuid"),
         required: true,
         index: true,
       },
-      audienceId: {
-        type: String,
-        required: true,
-        index: true,
-      },
       conversations: [ConversationsSchema],
     },
     { timestamps: true }

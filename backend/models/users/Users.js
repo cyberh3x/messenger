@@ -17,7 +17,18 @@ const mongoose = require("mongoose"),
       },
       contacts: {
         type: Array,
-        default: [],
+        default: [
+          {
+            contactId: {
+              type: String,
+              required: true,
+            },
+            roomId: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
       },
     },
     { timestamps: true }

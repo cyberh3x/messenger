@@ -6,19 +6,27 @@ import useToast from "./useToast";
 import { deleteCookie, setCookie } from "utils/cookie";
 import {
   AUTH,
+  CONTACTS,
+  CONVERSATION,
   HOME,
   IDENTITY,
   LOGIN,
   LOGOUT,
   REGISTER,
   SIGN_IN,
+  USER,
 } from "constants/routes";
-import { STORE_USER } from "constants/actionsTypes";
+import {
+  ADD_TO_CONTACTS,
+  STORE_CONTACTS,
+  STORE_USER,
+  TOGGLE_ADD_CONTACT_DIALOG,
+} from "constants/actionsTypes";
 import { TOKEN_KEY } from "constants";
 
 const useUser = () => {
   const [pending, setPending] = useState(false),
-    [{ user, isLoggedIn }, dispatch] = useAuth(),
+    [{ user, isLoggedIn, addContactDialogIsOpen }, dispatch] = useAuth(),
     { _get, _put, _post } = useHttp(),
     navigate = useNavigate(),
     { generate } = useToast(),
@@ -57,9 +65,42 @@ const useUser = () => {
     },
     store = (payload) => {
       dispatch({ type: STORE_USER, payload });
-    };
+    },
+    addContact = async (username) => {
+      setPending(true);
+      await _post(`${USER}${CONTACTS}`, { username })
+        .then(({ data: { contact, message } }) => {
+          dispatch({ type: ADD_TO_CONTACTS, payload: contact });
+          generate(message);
+        })
+        .finally(() => setPending(false));
+    },
+    getContacts = async () => {
+      setPending(true);
+      await _get(`${USER}${CONTACTS}`)
+        .then(({ data }) => {
+          data = data.map((contact) => ({
+            ...contact,
+            href: CONVERSATION.replace(":id", contact._id),
+          }));
+          dispatch({ type: STORE_CONTACTS, payload: data });
+        })
+        .finally(() => setPending(false));
+    },
+    handleToggleAddDialog = () => dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG });
 
-  return { login, register, verifyToken, user, isLoggedIn, pending };
+  return {
+    login,
+    register,
+    verifyToken,
+    addContact,
+    getContacts,
+    handleToggleAddDialog,
+    user,
+    isLoggedIn,
+    pending,
+    addContactDialogIsOpen,
+  };
 };
 
 export default useUser;

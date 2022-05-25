@@ -1,8 +1,7 @@
 const MessengerState = {
   tab: 0,
-  contacts: [],
-  addContactDialogIsOpen: false,
   room: {},
+  socket: {},
 };
 
 export default MessengerState;
