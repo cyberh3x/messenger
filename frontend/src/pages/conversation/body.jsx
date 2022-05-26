@@ -64,7 +64,6 @@ const Body = ({ socket }) => {
         user,
       });
       setMessage("");
-      scrollToBottom();
     },
     handleMessage = ({ target: { value } }) => setMessage(value),
     handleFileBrowser = () => fileInputRef.current.click(),
@@ -86,8 +85,8 @@ const Body = ({ socket }) => {
   }, [socket]);
 
   useEffect(() => {
-    setTimeout(scrollToBottom, 500);
-  }, []);
+    scrollToBottom(false);
+  }, [conversations]);
 
   return (
     <Grid
