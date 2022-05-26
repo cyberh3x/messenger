@@ -84,9 +84,7 @@ const AppLayout = ({ children, sidebar }) => {
                 </Box>
               </Grid>
               <Grid item xs={12} md={8}>
-                <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
-                  {children}
-                </Box>
+                {children}
               </Grid>
             </Grid>
           </Container>

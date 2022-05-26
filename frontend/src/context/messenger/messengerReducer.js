@@ -12,7 +12,6 @@ const MessengerProvider = (state, { type, payload }) => {
         ...state,
         tab: payload,
       };
-
     case STORE_ROOM:
       return {
         ...state,
@@ -23,7 +22,10 @@ const MessengerProvider = (state, { type, payload }) => {
         ...state,
         room: {
           ...state.room,
-          conversations: payload,
+          conversations: [
+            ...state.room.conversations,
+            payload[payload.length - 1],
+          ],
         },
       };
     case STORE_SOCKET:

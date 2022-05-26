@@ -4,36 +4,33 @@ import { io } from "socket.io-client";
 import AppLayout from "pages/layouts/app";
 import Body from "./body";
 import Header from "./header";
-import useUser from "hooks/useUser";
 import useRoom from "hooks/useConversations";
 
 const Conversation = () => {
   const { id } = useParams(),
-    {
-      user: { _id },
-    } = useUser(),
-    { storeRoom, storeSocket, closeSocket, socket } = useRoom(),
-    getMessages = () =>
-      socket.emit("get:room", { userId: _id, audienceId: id }),
+    [socket, setSocket] = useState(null),
+    { storeRoom } = useRoom(),
+    getMessages = () => socket.emit("get:room", id),
     onGetMessageList = () =>
       socket.on("room:ready", ({ room }) => storeRoom(room));
 
   useEffect(() => {
     const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
-    storeSocket(socketIo);
-    return closeSocket;
+    setSocket(socketIo);
+    return () => socketIo.close();
   }, []);
 
   useEffect(() => {
     if (socket) {
+      getMessages();
       onGetMessageList();
     }
   }, [socket]);
 
   return (
     <AppLayout>
-      <Header />
-      <Body />
+      <Header socket={socket} />
+      <Body socket={socket} />
     </AppLayout>
   );
 };

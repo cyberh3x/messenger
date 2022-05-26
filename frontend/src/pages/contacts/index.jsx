@@ -8,11 +8,7 @@ import AppLayout from "pages/layouts/app";
 import useUser from "hooks/useUser";
 
 const Contacts = () => {
-  const {
-      handleToggleAddDialog,
-      user: { contacts },
-      pending,
-    } = useUser(),
+  const { getContacts, handleToggleAddDialog, pending, contacts } = useUser(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -40,6 +36,10 @@ const Contacts = () => {
         <AddContact />
       </Grid>
     );
+
+  useEffect(() => {
+    getContacts();
+  }, []);
 
   return <AppLayout sidebar={<Sidebar />}></AppLayout>;
 };

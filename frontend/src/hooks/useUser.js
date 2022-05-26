@@ -26,7 +26,8 @@ import { TOKEN_KEY } from "constants";
 
 const useUser = () => {
   const [pending, setPending] = useState(false),
-    [{ user, isLoggedIn, addContactDialogIsOpen }, dispatch] = useAuth(),
+    [{ user, isLoggedIn, contacts, addContactDialogIsOpen }, dispatch] =
+      useAuth(),
     { _get, _put, _post } = useHttp(),
     navigate = useNavigate(),
     { generate } = useToast(),
@@ -69,7 +70,9 @@ const useUser = () => {
     addContact = async (username) => {
       setPending(true);
       await _post(`${USER}${CONTACTS}`, { username })
-        .then(({ data: { contact, message } }) => {
+        .then(({ data: { contact, message, roomId } }) => {
+          contact.roomId = roomId;
+          contact.href = CONVERSATION.replace(":id", contact.roomId);
           dispatch({ type: ADD_TO_CONTACTS, payload: contact });
           generate(message);
         })
@@ -81,7 +84,7 @@ const useUser = () => {
         .then(({ data }) => {
           data = data.map((contact) => ({
             ...contact,
-            href: CONVERSATION.replace(":id", contact._id),
+            href: CONVERSATION.replace(":id", contact.roomId),
           }));
           dispatch({ type: STORE_CONTACTS, payload: data });
         })
@@ -98,6 +101,7 @@ const useUser = () => {
     handleToggleAddDialog,
     user,
     isLoggedIn,
+    contacts,
     pending,
     addContactDialogIsOpen,
   };

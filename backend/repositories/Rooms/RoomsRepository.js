@@ -2,21 +2,12 @@ const rooms = require("../../models/rooms/Rooms"),
   { idIsValid } = require("../../utils/db");
 
 class RoomsRepository {
-  async get(userId, audienceId) {
-    if (audienceId && userId && idIsValid(userId) && idIsValid(audienceId)) {
+  async get(roomId) {
+    if (roomId && idIsValid(roomId)) {
       try {
-        const room = await rooms
-          .findOne()
-          .and([
-            {
-              $or: [{ userId, audienceId }],
-            },
-          ])
-          .exec();
-        console.log(room);
+        const room = await rooms.findOne({ _id: roomId }).exec();
         if (room) return room;
         else {
-          // const newRoom = await this.create(userId, audienceId);
           return {};
         }
       } catch (error) {

@@ -5,7 +5,16 @@ class ContactRepository {
   async get({ user }) {
     const contactIds = user.contacts.map((item) => item.contactId);
     try {
-      const contactList = await users.find({ _id: { $in: contactIds } }).exec();
+      let contactList = await users
+        .find({ _id: { $in: contactIds } })
+        .lean()
+        .exec();
+      contactList = contactList.map((contact) => {
+        user.contacts.map(({ contactId, roomId }) => {
+          if (String(contact._id) == String(contactId)) contact.roomId = roomId;
+        });
+        return contact;
+      });
       return contactList;
     } catch (error) {
       return error;
@@ -46,6 +55,19 @@ class ContactRepository {
             { new: true }
           )
           .exec();
+        await users
+          .findOneAndUpdate(
+            { _id: contact._id },
+            {
+              $addToSet: {
+                contacts: {
+                  contactId: user._id,
+                  roomId: newRoom._id,
+                },
+              },
+            }
+          )
+          .exec();
         return {
           message: "Contact added successfully.",
           contact,
@@ -78,7 +100,6 @@ class ContactRepository {
         status: 200,
       };
     } catch (error) {
-      console.log(error);
       return error;
     }
   }

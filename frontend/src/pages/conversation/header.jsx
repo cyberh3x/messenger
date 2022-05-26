@@ -4,8 +4,18 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Online from "components/flags/online";
 import Typography from "components/typography";
+import { useEffect, useState } from "react";
 
-const Header = () => {
+const Header = ({ socket }) => {
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("typing:start", () => setIsTyping(true));
+      socket.on("typing:stop", () => setIsTyping(false));
+    }
+  }, [socket]);
+
   return (
     <Grid
       item
@@ -23,7 +33,9 @@ const Header = () => {
           <Box mr={1}>
             <Avatar />
           </Box>
-          <Typography variant="h4">Sajjad</Typography>
+          <Typography variant="h4">
+            Sajjad {isTyping ? "Typing..." : ""}
+          </Typography>
         </Grid>
       </Link>
     </Grid>

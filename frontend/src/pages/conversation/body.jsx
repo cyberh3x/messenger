@@ -8,7 +8,6 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import IconButton from "components/button/iconButton";
 import useRoom from "hooks/useConversations";
 import useUser from "hooks/useUser";
-import SendIcon from "@mui/icons-material/Send";
 
 const styles = (theme) => ({
   root: {
@@ -48,6 +47,7 @@ const styles = (theme) => ({
 });
 
 const Body = ({ socket }) => {
+  let typingTimeout = null;
   const classes = useClasses(styles),
     [message, setMessage] = useState(""),
     { room, updateConversations } = useRoom(),
@@ -64,20 +64,23 @@ const Body = ({ socket }) => {
         user,
       });
       setMessage("");
-      setTimeout(scrollToBottom, 100);
+      scrollToBottom();
     },
     handleMessage = ({ target: { value } }) => setMessage(value),
     handleFileBrowser = () => fileInputRef.current.click(),
-    scrollToBottom = () => {
-      const topPos = rootRef.current.scrollHeight;
-      rootRef.current.scrollTop = topPos;
+    scrollToBottom = (withTimeout = true, timeout = 100) => {
+      withTimeout ? setTimeout(scroll, timeout) : scroll();
+      function scroll() {
+        const topPos = rootRef.current.scrollHeight;
+        rootRef.current.scrollTop = topPos;
+      }
     };
 
   useEffect(() => {
     if (socket) {
       socket.on("message:saved", ({ room }) => {
-        console.log(room);
         updateConversations(room.conversations);
+        scrollToBottom();
       });
     }
   }, [socket]);
@@ -112,35 +115,49 @@ const Body = ({ socket }) => {
               status,
               createdAt,
               updatedAt,
-            }) => (
-              <Grid
-                item
-                xs={12}
-                style={{ direction: user._id == senderId ? "rtl" : "ltr" }}
-                key={_id}
-                my={3}
-              >
-                <Grid container>
-                  <Grid item xs={1} alignSelf="end">
-                    <Avatar />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <div
-                      className={`${classes.message} ${
-                        user._id === senderId ? classes.user : classes.audience
-                      }`}
-                    >
-                      <Typography>{message}</Typography>
-                      <Box textAlign={"right"} mt={1}>
-                        <Typography variant="subtitle2">
-                          <i>{createdAt.toString()}</i>
-                        </Typography>
-                      </Box>
-                    </div>
+            }) => {
+              let date = new Date(createdAt);
+              const year = date.getFullYear(),
+                month = date.getMonth(),
+                day = date.getDay(),
+                hour = date.getHours(),
+                minutes = date.getMinutes(),
+                seconds = date.getSeconds(),
+                displayDate = `${year}-${month <= 9 ? month : "0" + month}-${
+                  day <= 9 ? day : "0" + day
+                } | ${hour}:${minutes}:${seconds}`;
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  style={{ direction: user._id == senderId ? "rtl" : "ltr" }}
+                  my={3}
+                  key={_id}
+                >
+                  <Grid container>
+                    <Grid item xs={1} alignSelf="end">
+                      <Avatar />
+                    </Grid>
+                    <Grid item xs={11}>
+                      <div
+                        className={`${classes.message} ${
+                          user._id === senderId
+                            ? classes.user
+                            : classes.audience
+                        }`}
+                      >
+                        <Typography dir="ltr">{message}</Typography>
+                        <Box textAlign={"right"} mt={1}>
+                          <Typography variant="subtitle2" dir="ltr">
+                            <i>{displayDate}</i>
+                          </Typography>
+                        </Box>
+                      </div>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            )
+              );
+            }
           )}
         </Fragment>
       ) : (

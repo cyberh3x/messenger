@@ -29,10 +29,6 @@ const AddContact = () => {
     },
     storeErrors = (errors) => setErrors(errors);
 
-  useEffect(() => {
-    console.log(addContactDialogIsOpen);
-  }, [addContactDialogIsOpen]);
-
   return (
     <Dialog
       open={addContactDialogIsOpen}
