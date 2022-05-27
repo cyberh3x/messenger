@@ -27,7 +27,7 @@ const Item = ({
   const classes = useClasses(styles);
   return (
     <Grid item xs={12} key={id}>
-      <Link to={href}>
+      <Link to={href.url} state={href.state}>
         <List
           sx={{
             width: "100%",

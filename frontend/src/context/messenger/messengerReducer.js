@@ -18,14 +18,12 @@ const MessengerProvider = (state, { type, payload }) => {
         room: payload,
       };
     case UPDATE_CONVERSATIONS:
+      console.log(payload);
       return {
         ...state,
         room: {
           ...state.room,
-          conversations: [
-            ...state.room.conversations,
-            payload[payload.length - 1],
-          ],
+          conversations: payload,
         },
       };
     case STORE_SOCKET:

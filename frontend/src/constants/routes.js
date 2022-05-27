@@ -8,6 +8,5 @@ export const API = "/api",
   SIGN_IN = "/sign-in",
   SIGN_UP = "/sign-up",
   CONVERSATION = "/conversation/:id",
-  CONVERSATIONS = "/conversations",
   USER = "/user",
   CONTACTS = "/contacts";

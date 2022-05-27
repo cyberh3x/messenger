@@ -1,13 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import useClasses from "hooks/useClasses";
+import useSocket from "hooks/useSocket";
+import useUser from "hooks/useUser";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Typography from "components/typography";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import IconButton from "components/button/iconButton";
-import useRoom from "hooks/useConversations";
-import useUser from "hooks/useUser";
 
 const styles = (theme) => ({
   root: {
@@ -46,11 +46,10 @@ const styles = (theme) => ({
   },
 });
 
-const Body = ({ socket }) => {
-  let typingTimeout = null;
+const Body = () => {
   const classes = useClasses(styles),
     [message, setMessage] = useState(""),
-    { room, updateConversations } = useRoom(),
+    { room, updateConversations, socket } = useSocket(),
     { conversations } = room,
     { user } = useUser(),
     rootRef = useRef(null),
@@ -74,15 +73,6 @@ const Body = ({ socket }) => {
         rootRef.current.scrollTop = topPos;
       }
     };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("message:saved", ({ room }) => {
-        updateConversations(room.conversations);
-        scrollToBottom();
-      });
-    }
-  }, [socket]);
 
   useEffect(() => {
     scrollToBottom(false);

@@ -84,7 +84,10 @@ const useUser = () => {
         .then(({ data }) => {
           data = data.map((contact) => ({
             ...contact,
-            href: CONVERSATION.replace(":id", contact.roomId),
+            href: {
+              url: CONVERSATION.replace(":id", contact.roomId),
+              state: contact,
+            },
           }));
           dispatch({ type: STORE_CONTACTS, payload: data });
         })

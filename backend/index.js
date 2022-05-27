@@ -90,10 +90,13 @@ io.on("connection", (socket) => {
   });
   socket.on("new:message", async ({ room, message, user }) => {
     const repository = ConversationsRepository;
-    await repository.create(room, message, user).then((room) => {
-      socket.broadcast.emit("message:saved", { room });
-      socket.emit("message:saved", { room });
-    });
+    await repository
+      .create(room, message, user)
+      .then((room) => {
+        socket.broadcast.emit("message:saved", { room });
+        socket.emit("message:sent", { room });
+      })
+      .catch((error) => socket.emit("message:failed", { error }));
   });
 
   socket.on("typing:start", () => socket.broadcast.emit("typing:start"));

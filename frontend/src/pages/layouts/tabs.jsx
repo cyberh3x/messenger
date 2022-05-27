@@ -16,16 +16,6 @@ const SidebarTabs = ({ handleChange, tab }) => {
     >
       <Tab
         icon={
-          <Link to={CONVERSATIONS}>
-            <HistoryIcon
-              style={{ color: pathname === CONVERSATIONS ? "#fff" : "#686868" }}
-            />
-          </Link>
-        }
-        aria-label="history"
-      />
-      <Tab
-        icon={
           <Link to={CONTACTS}>
             <ContactPageIcon
               style={{ color: pathname === CONTACTS ? "#fff" : "#686868" }}
