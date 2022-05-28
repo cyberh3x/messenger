@@ -11,7 +11,7 @@ import IconButton from "components/button/iconButton";
 
 const styles = (theme) => ({
   root: {
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   message: {
     padding: theme.spacing(2),

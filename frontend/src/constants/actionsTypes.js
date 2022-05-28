@@ -6,3 +6,5 @@ export const TOGGLE_ADD_CONTACT_DIALOG = "toggle_add_contact_dialog";
 export const STORE_ROOM = "store_room";
 export const UPDATE_CONVERSATIONS = "update_conversations";
 export const STORE_SOCKET = "store_socket";
+export const LOGOUT = "logout";
+export const CHANGE_CONTACT_STATUS = "change_contact_status";

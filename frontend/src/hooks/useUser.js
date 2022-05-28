@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useSocket from "./useSocket";
 import { useAuth } from "context/auth/authProvider";
 import { useNavigate } from "react-router-dom";
 import useHttp from "./useHttp";
@@ -21,6 +22,7 @@ import {
   STORE_CONTACTS,
   STORE_USER,
   TOGGLE_ADD_CONTACT_DIALOG,
+  LOGOUT as LOGOUT_ACTION,
 } from "constants/actionsTypes";
 import { TOKEN_KEY } from "constants";
 
@@ -29,6 +31,7 @@ const useUser = () => {
     [{ user, isLoggedIn, contacts, addContactDialogIsOpen }, dispatch] =
       useAuth(),
     { _get, _put, _post } = useHttp(),
+    { socket } = useSocket(),
     navigate = useNavigate(),
     { generate } = useToast(),
     login = async (credentials) => {
@@ -39,6 +42,7 @@ const useUser = () => {
             setCookie(TOKEN_KEY, user.accessToken);
             delete user.accessToken;
             store(user);
+            // socket.emit("user:statusChanged", { user });
             navigate(HOME);
           })
           .finally(() => setPending(false));
@@ -61,8 +65,13 @@ const useUser = () => {
         .catch(logout);
     },
     logout = async () => {
-      deleteCookie(TOKEN_KEY);
-      _put(`${AUTH}${LOGOUT}`).finally(() => navigate(SIGN_IN));
+      await _put(`${AUTH}${LOGOUT}`).finally(() => {
+        deleteCookie(TOKEN_KEY);
+        user.status = 0;
+        // socket.emit("user:statusChanged", { user });
+        dispatch({ type: LOGOUT_ACTION });
+        navigate(SIGN_IN);
+      });
     },
     store = (payload) => {
       dispatch({ type: STORE_USER, payload });
@@ -102,6 +111,7 @@ const useUser = () => {
     addContact,
     getContacts,
     handleToggleAddDialog,
+    logout,
     user,
     isLoggedIn,
     contacts,

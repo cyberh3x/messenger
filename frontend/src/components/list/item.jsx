@@ -20,7 +20,7 @@ const Item = ({
   username,
   text = "",
   avatar = null,
-  isOnline = false,
+  status = 0,
   menu = [],
   href = "",
 }) => {
@@ -41,7 +41,7 @@ const Item = ({
               <Grid item xs={2} sm={5} md={2}>
                 <ListItemAvatar style={{ position: "relative" }}>
                   <Avatar alt={username} src={avatar} />
-                  {isOnline && (
+                  {status == 1 && (
                     <Online style={{ transform: "translate(30px, -12px)" }} />
                   )}
                 </ListItemAvatar>

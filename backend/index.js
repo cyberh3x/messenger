@@ -11,30 +11,22 @@ const express = require("express"),
   cookieParser = require("cookie-parser"),
   logger = require("morgan"),
   cors = require("cors"),
-  { createServer } = require("http"),
-  { Server } = require("socket.io"),
+  socket = require("./socket"),
   { API, AUTH, USER } = require("./constants/routes"),
-  RoomsRepository = require("./repositories/Rooms/RoomsRepository"),
-  ConversationsRepository = require("./repositories/Conversations/ConversationsRepository"),
-  _env = process.env;
+  { _ENV } = require("./constants");
 
 mongoose
-  .connect(_env.MONGO_URL, {
+  .connect(_ENV.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("DB Connection successfully!"))
   .catch((error) => console.log(error));
 
-var corsOptions = {
-  origin: _env.CLIENT_URL,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
 app.use(
-  cors({ credentials: true, origin: _env.CLIENT_URL }),
+  cors({ credentials: true, origin: _ENV.CLIENT_URL }),
   function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", _env.CLIENT_URL);
+    res.setHeader("Access-Control-Allow-Origin", _ENV.CLIENT_URL);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     res.setHeader("Access-Control-Allow-Credentials", true);
@@ -58,56 +50,6 @@ app.use((err, req, res) => {
   res.render("error");
 });
 
-// Socket.io
-const httpServer = createServer();
-httpServer.listen(_env.SOCKET_IO_PORT);
-const io = new Server(httpServer, {
-  cors: {
-    origin: _env.CLIENT_URL,
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("connected");
-  socket.on("get:room", async (roomId) => {
-    const repository = RoomsRepository;
-    await repository
-      .get(roomId)
-      .then((room) => {
-        socket.emit("room:ready", {
-          message: "Room is ready for conversation.",
-          room,
-          status: 200,
-        });
-      })
-      .catch((error) =>
-        socket.emit("room:notReady", {
-          message: "Room is not ready for conversation.",
-          status: 422,
-          error,
-        })
-      );
-  });
-  socket.on("new:message", async ({ room, message, user }) => {
-    const repository = ConversationsRepository;
-    await repository
-      .create(room, message, user)
-      .then((room) => {
-        socket.broadcast.emit("message:saved", { room });
-        socket.emit("message:sent", { room });
-      })
-      .catch((error) => socket.emit("message:failed", { error }));
-  });
-
-  socket.on("typing:start", () => socket.broadcast.emit("typing:start"));
-  socket.on("typing:stop", () => socket.broadcast.emit("typing:stop"));
-
-  socket.on("disconnect", () => {
-    console.log("disconnected");
-    socket.emit("user-disconnected");
-  });
-});
-
-app.listen(_env.PORT || 5000, () => {
+app.listen(_ENV.PORT || 5000, () => {
   console.log("Backend server is running!");
 });

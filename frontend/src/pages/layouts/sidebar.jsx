@@ -11,7 +11,6 @@ import { HOME } from "constants/routes";
 import { CHANGE_TAB } from "constants/actionsTypes";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import Menu from "components/menu";
 
 const styles = (theme) => ({
   root: {
