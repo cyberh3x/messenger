@@ -1,9 +1,9 @@
+import { useMessenger } from "context/messenger/messengerProvider";
 import {
   STORE_ROOM,
   STORE_SOCKET,
   UPDATE_CONVERSATIONS,
 } from "constants/actionsTypes";
-import { useMessenger } from "context/messenger/messengerProvider";
 
 const useSocket = () => {
   const [{ room, socket }, dispatch] = useMessenger(),

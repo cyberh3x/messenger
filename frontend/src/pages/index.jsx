@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router";
 import { createTheme } from "@mui/material";
 import { io } from "socket.io-client";
 import useSocket from "hooks/useSocket";
+import useUser from "hooks/useUser";
 import useToast from "hooks/useToast";
 import ThemeProvider from "@mui/system/ThemeProvider";
 import AuthRoute from "utils/authRoute";
@@ -20,13 +21,11 @@ import {
   SIGN_UP,
 } from "constants/routes";
 import { theme } from "constants/theme";
-import { useAuth } from "context/auth/authProvider";
-import { CHANGE_CONTACT_STATUS } from "constants/actionsTypes";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme),
     { storeSocket, updateConversations } = useSocket(),
-    [state, dispatch] = useAuth(),
+    { handleContactsStatus } = useUser(),
     { generate } = useToast();
 
   useEffect(() => {
@@ -42,9 +41,9 @@ const AppRoot = () => {
       updateConversations(room.conversations);
     });
 
-    socketIo.on("user:statusChanged", ({ user }) =>
-      dispatch({ type: CHANGE_CONTACT_STATUS, payload: user })
-    );
+    socketIo.on("user:online", ({ user }) => handleContactsStatus(user));
+
+    socketIo.on("user:offline", ({ user }) => handleContactsStatus(user));
 
     socketIo.on("message:failed", ({ error }) => {
       console.error(error);

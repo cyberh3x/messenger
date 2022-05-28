@@ -30,9 +30,8 @@ class LoginRepository {
           const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SEC, {
             expiresIn: "3d",
           });
-          io.serverSideEmit("user:login", { user });
           res.cookie(TOKEN_KEY, accessToken);
-          return { user: { ...user, accessToken }, status: 200 };
+          return { user: { ...user._doc, accessToken }, status: 200 };
         } catch (error) {
           console.log(error);
           return error;

@@ -45,11 +45,12 @@ io.on("connection", (socket) => {
       .catch((error) => socket.emit("message:failed", { error }));
   });
 
-  socket.on("user:login", ({ user }) => {
-    console.log("user:login");
+  socket.on("user:online", ({ user }) => {
+    socket.broadcast.emit("user:online", { user });
   });
-  socket.on("user:logout", ({ user }) => {
-    console.log("user:logout");
+
+  socket.on("user:offline", ({ user }) => {
+    socket.broadcast.emit("user:offline", { user });
   });
 
   socket.on("typing:start", () => socket.broadcast.emit("typing:start"));

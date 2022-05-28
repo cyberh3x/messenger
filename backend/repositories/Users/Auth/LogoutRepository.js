@@ -10,7 +10,6 @@ class LogoutRepository {
         const user = await users
           .findOneAndUpdate({ _id: req.user._id }, { status: 0 }, { new: true })
           .exec();
-        io.serverSideEmit("user:logout", { user });
         delete req.user;
         res.clearCookie(TOKEN_KEY);
         return {

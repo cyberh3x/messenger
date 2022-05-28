@@ -23,6 +23,7 @@ import {
   STORE_USER,
   TOGGLE_ADD_CONTACT_DIALOG,
   LOGOUT as LOGOUT_ACTION,
+  CHANGE_CONTACT_STATUS,
 } from "constants/actionsTypes";
 import { TOKEN_KEY } from "constants";
 
@@ -42,7 +43,7 @@ const useUser = () => {
             setCookie(TOKEN_KEY, user.accessToken);
             delete user.accessToken;
             store(user);
-            // socket.emit("user:statusChanged", { user });
+            socket.emit("user:online", { user });
             navigate(HOME);
           })
           .finally(() => setPending(false));
@@ -68,7 +69,7 @@ const useUser = () => {
       await _put(`${AUTH}${LOGOUT}`).finally(() => {
         deleteCookie(TOKEN_KEY);
         user.status = 0;
-        // socket.emit("user:statusChanged", { user });
+        socket.emit("user:offline", { user });
         dispatch({ type: LOGOUT_ACTION });
         navigate(SIGN_IN);
       });
@@ -81,7 +82,10 @@ const useUser = () => {
       await _post(`${USER}${CONTACTS}`, { username })
         .then(({ data: { contact, message, roomId } }) => {
           contact.roomId = roomId;
-          contact.href = CONVERSATION.replace(":id", contact.roomId);
+          contact.href = {
+            url: CONVERSATION.replace(":id", contact.roomId),
+            state: contact._id,
+          };
           dispatch({ type: ADD_TO_CONTACTS, payload: contact });
           generate(message);
         })
@@ -95,14 +99,16 @@ const useUser = () => {
             ...contact,
             href: {
               url: CONVERSATION.replace(":id", contact.roomId),
-              state: contact,
+              state: contact._id,
             },
           }));
           dispatch({ type: STORE_CONTACTS, payload: data });
         })
         .finally(() => setPending(false));
     },
-    handleToggleAddDialog = () => dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG });
+    handleToggleAddDialog = () => dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG }),
+    handleContactsStatus = (user) =>
+      dispatch({ type: CHANGE_CONTACT_STATUS, payload: user });
 
   return {
     login,
@@ -112,6 +118,7 @@ const useUser = () => {
     getContacts,
     handleToggleAddDialog,
     logout,
+    handleContactsStatus,
     user,
     isLoggedIn,
     contacts,

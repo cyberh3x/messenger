@@ -38,13 +38,13 @@ const AuthReducer = (state, { type, payload }) => {
         contacts: [],
       };
     case CHANGE_CONTACT_STATUS:
-      if (state.user && state.user._id != payload._id) {
-        console.log(payload);
-        const contactIndex = state.contacts.findIndex(({ _id }) => {
-          console.log(_id, payload._id);
+      const contacts = state.contacts;
+      if (contacts.length) {
+        const contactIndex = contacts.findIndex(({ _id }) => {
           return _id == payload._id;
         });
-        state.contacts[contactIndex].status = payload.status;
+        if (contactIndex in contacts)
+          contacts[contactIndex].status = payload.status;
       }
       return {
         ...state,
