@@ -1,14 +1,15 @@
 import { useEffect } from "react";
+import useSocket from "hooks/useSocket";
 import Grid from "@mui/material/Grid";
 import Button from "components/button";
 import Typography from "components/typography";
 import List from "components/list";
 import AddContact from "./add";
 import AppLayout from "pages/layouts/app";
-import useUser from "hooks/useUser";
+import CircularProgress from "components/progress/circular";
 
 const Contacts = () => {
-  const { getContacts, handleToggleAddDialog, pending, contacts } = useUser(),
+  const { getContacts, handleToggleAddDialog, pending, contacts } = useSocket(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -23,7 +24,7 @@ const Contacts = () => {
         </Grid>
         <hr />
         {pending ? (
-          <Typography>Lading contacts...</Typography>
+          <CircularProgress />
         ) : (
           <Grid item xs={12}>
             {contacts.length ? (

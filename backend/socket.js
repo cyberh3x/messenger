@@ -14,14 +14,15 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("connected");
-  socket.on("get:room", async (roomId) => {
+  socket.on("get:room", async ({ roomId, contactId }) => {
     const repository = RoomsRepository;
     await repository
-      .get(roomId)
-      .then((room) => {
+      .get(roomId, contactId)
+      .then(({ room, contact }) => {
         socket.emit("room:ready", {
           message: "Room is ready for conversation.",
           room,
+          contact,
           status: 200,
         });
       })

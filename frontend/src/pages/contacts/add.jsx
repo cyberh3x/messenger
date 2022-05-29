@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import useUser from "hooks/useUser";
+import { useState } from "react";
+import useSocket from "hooks/useSocket";
 import Grid from "@mui/material/Grid";
 import Dialog from "components/dialog";
 import TextField from "components/form/textField";
@@ -10,7 +10,7 @@ const AddContact = () => {
   const [username, setUsername] = useState(""),
     [errors, setErrors] = useState({}),
     { addContact, addContactDialogIsOpen, handleToggleAddDialog, pending } =
-      useUser(),
+      useSocket(),
     handleUsername = ({ target: { value } }) => setUsername(value),
     handleSubmit = async (e) => {
       e.preventDefault();

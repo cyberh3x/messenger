@@ -7,24 +7,14 @@ import useToast from "./useToast";
 import { deleteCookie, setCookie } from "utils/cookie";
 import {
   AUTH,
-  CONTACTS,
-  CONVERSATION,
   HOME,
   IDENTITY,
   LOGIN,
   LOGOUT,
   REGISTER,
   SIGN_IN,
-  USER,
 } from "constants/routes";
-import {
-  ADD_TO_CONTACTS,
-  STORE_CONTACTS,
-  STORE_USER,
-  TOGGLE_ADD_CONTACT_DIALOG,
-  LOGOUT as LOGOUT_ACTION,
-  CHANGE_CONTACT_STATUS,
-} from "constants/actionsTypes";
+import { STORE_USER, LOGOUT as LOGOUT_ACTION } from "constants/actionsTypes";
 import { TOKEN_KEY } from "constants";
 
 const useUser = () => {
@@ -76,53 +66,17 @@ const useUser = () => {
     },
     store = (payload) => {
       dispatch({ type: STORE_USER, payload });
-    },
-    addContact = async (username) => {
-      setPending(true);
-      await _post(`${USER}${CONTACTS}`, { username })
-        .then(({ data: { contact, message, roomId } }) => {
-          contact.roomId = roomId;
-          contact.href = {
-            url: CONVERSATION.replace(":id", contact.roomId),
-            state: contact._id,
-          };
-          dispatch({ type: ADD_TO_CONTACTS, payload: contact });
-          generate(message);
-        })
-        .finally(() => setPending(false));
-    },
-    getContacts = async () => {
-      setPending(true);
-      await _get(`${USER}${CONTACTS}`)
-        .then(({ data }) => {
-          data = data.map((contact) => ({
-            ...contact,
-            href: {
-              url: CONVERSATION.replace(":id", contact.roomId),
-              state: contact._id,
-            },
-          }));
-          dispatch({ type: STORE_CONTACTS, payload: data });
-        })
-        .finally(() => setPending(false));
-    },
-    handleToggleAddDialog = () => dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG }),
-    handleContactsStatus = (user) =>
-      dispatch({ type: CHANGE_CONTACT_STATUS, payload: user });
+    };
 
   return {
     login,
     register,
     verifyToken,
-    addContact,
-    getContacts,
-    handleToggleAddDialog,
     logout,
-    handleContactsStatus,
     user,
     isLoggedIn,
-    contacts,
     pending,
+    contacts,
     addContactDialogIsOpen,
   };
 };

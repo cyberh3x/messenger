@@ -1,12 +1,14 @@
 const rooms = require("../../models/rooms/Rooms"),
+  users = require("../../models/users/Users"),
   { idIsValid } = require("../../utils/db");
 
 class RoomsRepository {
-  async get(roomId) {
-    if (roomId && idIsValid(roomId)) {
+  async get(roomId, contactId) {
+    if (roomId && contactId && idIsValid(roomId) && idIsValid(contactId)) {
       try {
-        const room = await rooms.findOne({ _id: roomId }).exec();
-        if (room) return room;
+        const room = await rooms.findOne({ _id: roomId }).exec(),
+          contact = await users.findById(contactId).exec();
+        if (room) return { room, contact };
         else {
           return {};
         }

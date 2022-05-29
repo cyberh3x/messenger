@@ -24,8 +24,7 @@ import { theme } from "constants/theme";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme),
-    { storeSocket, updateConversations } = useSocket(),
-    { handleContactsStatus } = useUser(),
+    { storeSocket, updateConversations, updateContactStatus } = useSocket(),
     { generate } = useToast();
 
   useEffect(() => {
@@ -34,16 +33,15 @@ const AppRoot = () => {
 
     socketIo.on("message:saved", ({ room }) => {
       updateConversations(room.conversations);
-      generate("You have new message.");
     });
 
     socketIo.on("message:sent", ({ room }) => {
       updateConversations(room.conversations);
     });
 
-    socketIo.on("user:online", ({ user }) => handleContactsStatus(user));
+    socketIo.on("user:online", ({ user }) => updateContactStatus(user));
 
-    socketIo.on("user:offline", ({ user }) => handleContactsStatus(user));
+    socketIo.on("user:offline", ({ user }) => updateContactStatus(user));
 
     socketIo.on("message:failed", ({ error }) => {
       console.error(error);

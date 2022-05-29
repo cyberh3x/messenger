@@ -7,4 +7,4 @@ export const STORE_ROOM = "store_room";
 export const UPDATE_CONVERSATIONS = "update_conversations";
 export const STORE_SOCKET = "store_socket";
 export const LOGOUT = "logout";
-export const CHANGE_CONTACT_STATUS = "change_contact_status";
+export const UPDATE_CONTACT_STATUS = "update_contact_status";
