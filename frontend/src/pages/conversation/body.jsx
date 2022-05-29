@@ -6,8 +6,6 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Typography from "components/typography";
-import AttachmentIcon from "@mui/icons-material/Attachment";
-import IconButton from "components/button/iconButton";
 import dayjs from "dayjs";
 
 const styles = (theme) => ({
@@ -35,12 +33,17 @@ const styles = (theme) => ({
       border: 0,
       background: "transparent",
       width: "85%",
+      height: "100%",
+      margin: theme.spacing(0, 2),
       [theme.breakpoints.down("sm")]: {
         width: "65%",
       },
     },
     "& input:focus": {
       outlineWidth: 0,
+    },
+    "& input::placeholder": {
+      alignSelf: "center",
     },
   },
   content: {
@@ -153,27 +156,13 @@ const Body = () => {
           my={2}
           boxShadow={1}
         >
-          <Grid container alignItems="baseline">
-            <Box mr={1}>
-              <Grid item xs={1}>
-                <IconButton onClick={handleFileBrowser}>
-                  <AttachmentIcon />
-                </IconButton>
-                <input
-                  type="file"
-                  style={{ display: "none" }}
-                  ref={fileInputRef}
-                />
-              </Grid>
-            </Box>
-            <input
-              type="text"
-              placeholder="Type your message..."
-              value={message}
-              onChange={handleMessage}
-              ref={messageInputRef}
-            />
-          </Grid>
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={message}
+            onChange={handleMessage}
+            ref={messageInputRef}
+          />
         </Grid>
       </form>
     </>

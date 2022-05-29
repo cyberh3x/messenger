@@ -79,11 +79,13 @@ const AppLayout = ({ children, sidebar }) => {
           <Container maxWidth="xl">
             <Grid container spacing={3} px={3}>
               <Grid item xs={12} md={4}>
-                <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
-                  {sidebar}
-                </Box>
+                {sidebar && (
+                  <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
+                    {sidebar}
+                  </Box>
+                )}
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={sidebar ? 8 : 12}>
                 {children}
               </Grid>
             </Grid>

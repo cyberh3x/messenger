@@ -51,5 +51,5 @@ app.use((err, req, res) => {
 });
 
 app.listen(_ENV.PORT || 5000, () => {
-  console.log("Backend server is running!");
+  console.log(`Server running on port: ${_ENV.PORT}`);
 });

@@ -13,7 +13,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("connected");
+  console.log("Socket.io connected");
   socket.on("get:room", async ({ roomId, contactId }) => {
     const repository = RoomsRepository;
     await repository
@@ -54,11 +54,8 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("user:offline", { user });
   });
 
-  socket.on("typing:start", () => socket.broadcast.emit("typing:start"));
-  socket.on("typing:stop", () => socket.broadcast.emit("typing:stop"));
-
   socket.on("disconnect", () => {
-    console.log("disconnected");
+    console.log("Socket.io disconnected");
     socket.emit("user-disconnected");
   });
 });
