@@ -86,20 +86,33 @@ class ContactRepository {
 
   async destory({ body: { id }, user }) {
     try {
-      const contact = await this.getContact(id);
-      const pullFromContacts = await users.findOneAndUpdate(
-        {
-          _id: user._id,
-        },
-        { $pullAll: { contacts: [contact._id] } },
-        { new: true }
-      );
+      const contact = await this.getContact(id),
+        userContactIndex = contact.contacts.findIndex(({ contactId }) => {
+          return contactId == user._id;
+        });
+      let roomId = null;
+      if (userContactIndex in contact.contacts) {
+        roomId = contact.contacts[userContactIndex].roomId;
+        await rooms.deleteOne({ _id: roomId });
+        contact.contacts.splice(userContactIndex, 1);
+        await contact.save();
+      }
+      const updateUser = await users
+        .findOneAndUpdate(
+          {
+            _id: user._id,
+          },
+          { $pull: { contacts: { contactId: contact._id } } },
+          { new: true }
+        )
+        .exec();
       return {
         message: "Contact deleted successfully.",
-        contact,
+        contacts: updateUser.contacts,
         status: 200,
       };
     } catch (error) {
+      console.log(error);
       return error;
     }
   }

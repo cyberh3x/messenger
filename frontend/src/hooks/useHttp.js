@@ -22,7 +22,8 @@ const useHttp = () => {
       await axios.post(url, data, config),
     _put = async (url, data = [], config = {}) =>
       await axios.put(url, data, config),
-    _delete = async (url, config = {}) => await axios.delete(url, config);
+    _delete = async (url, data, config = {}) =>
+      await axios.delete(url, { ...config, data });
 
   useEffect(() => {
     axios.interceptors.response.use(

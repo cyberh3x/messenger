@@ -24,7 +24,8 @@ import { theme } from "constants/theme";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme),
-    { storeSocket, updateConversations, updateContactStatus } = useSocket(),
+    { storeSocket, updateConversations, updateContactStatus, getContacts } =
+      useSocket(),
     { generate } = useToast();
 
   useEffect(() => {
@@ -42,6 +43,8 @@ const AppRoot = () => {
     socketIo.on("user:online", ({ user }) => updateContactStatus(user));
 
     socketIo.on("user:offline", ({ user }) => updateContactStatus(user));
+
+    socketIo.on("contacts:update", getContacts);
 
     socketIo.on("message:failed", ({ error }) => {
       console.error(error);

@@ -7,9 +7,11 @@ import List from "components/list";
 import AddContact from "./add";
 import AppLayout from "pages/layouts/app";
 import CircularProgress from "components/progress/circular";
+import RemoveContact from "./remove";
 
 const Contacts = () => {
-  const { getContacts, handleToggleAddDialog, pending, contacts } = useSocket(),
+  const { getContacts, handleToggleAddContactDialog, pending, contacts } =
+      useSocket(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -17,7 +19,7 @@ const Contacts = () => {
             <Typography variant="h5">Contacts</Typography>
           </Grid>
           <Grid item xs={6} textAlign="right">
-            <Button color="primary" onClick={handleToggleAddDialog}>
+            <Button color="primary" onClick={handleToggleAddContactDialog}>
               Add
             </Button>
           </Grid>
@@ -35,6 +37,7 @@ const Contacts = () => {
           </Grid>
         )}
         <AddContact />
+        <RemoveContact />
       </Grid>
     );
 

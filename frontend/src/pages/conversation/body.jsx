@@ -54,11 +54,10 @@ const styles = (theme) => ({
 const Body = () => {
   const classes = useClasses(styles),
     [message, setMessage] = useState(""),
-    { room, updateConversations, socket } = useSocket(),
+    { room, socket } = useSocket(),
     { conversations } = room,
     { user } = useUser(),
     rootRef = useRef(null),
-    fileInputRef = useRef(null),
     messageInputRef = useRef(null),
     handleSendMessage = (e) => {
       e.preventDefault();
@@ -70,7 +69,6 @@ const Body = () => {
       setMessage("");
     },
     handleMessage = ({ target: { value } }) => setMessage(value),
-    handleFileBrowser = () => fileInputRef.current.click(),
     scrollToBottom = (withTimeout = true, timeout = 100) => {
       withTimeout ? setTimeout(scroll, timeout) : scroll();
       function scroll() {

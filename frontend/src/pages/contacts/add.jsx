@@ -9,8 +9,12 @@ import { addSchema } from "./schema";
 const AddContact = () => {
   const [username, setUsername] = useState(""),
     [errors, setErrors] = useState({}),
-    { addContact, addContactDialogIsOpen, handleToggleAddDialog, pending } =
-      useSocket(),
+    {
+      addContact,
+      addContactDialogIsOpen,
+      handleToggleAddContactDialog,
+      pending,
+    } = useSocket(),
     handleUsername = ({ target: { value } }) => setUsername(value),
     handleSubmit = async (e) => {
       e.preventDefault();
@@ -21,7 +25,7 @@ const AddContact = () => {
             .then(() => {
               setErrors({});
               setUsername("");
-              handleToggleAddDialog();
+              handleToggleAddContactDialog();
             })
             .catch(({ response: { data } }) => setErrors(data));
         })
@@ -32,7 +36,7 @@ const AddContact = () => {
   return (
     <Dialog
       open={addContactDialogIsOpen}
-      handleClose={handleToggleAddDialog}
+      handleClose={handleToggleAddContactDialog}
       handleSubmit={handleSubmit}
       title="Add contact"
       pending={pending}

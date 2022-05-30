@@ -1,10 +1,12 @@
 import {
   ADD_TO_CONTACTS,
   CHANGE_TAB,
+  REMOVE_CONTACT,
   STORE_CONTACTS,
   STORE_ROOM,
   STORE_SOCKET,
   TOGGLE_ADD_CONTACT_DIALOG,
+  TOGGLE_REMOVE_CONTACT_DIALOG,
   UPDATE_CONTACT_STATUS,
   UPDATE_CONVERSATIONS,
 } from "constants/actionsTypes";
@@ -63,6 +65,19 @@ const MessengerProvider = (state, { type, payload }) => {
       return {
         ...state,
         addContactDialogIsOpen: !state.addContactDialogIsOpen,
+      };
+    case TOGGLE_REMOVE_CONTACT_DIALOG:
+      return {
+        ...state,
+        removeContactDialogIsOpen: !state.removeContactDialogIsOpen,
+        selectedContactForRemove: payload,
+      };
+    case REMOVE_CONTACT:
+      const _contacts = state.contacts;
+      const _contactIndex = _contacts.findIndex(({ _id }) => _id == payload);
+      if (_contactIndex in _contacts) _contacts.splice(_contactIndex, 1);
+      return {
+        ...state,
       };
     default:
       return {

@@ -5,6 +5,8 @@ const MessengerState = {
   socket: undefined,
   addContactDialogIsOpen: false,
   contacts: [],
+  removeContactDialogIsOpen: false,
+  selectedContactForRemove: null,
 };
 
 export default MessengerState;

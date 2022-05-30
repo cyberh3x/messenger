@@ -54,6 +54,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("user:offline", { user });
   });
 
+  socket.on("contact:removed", () => socket.broadcast.emit("contacts:update"));
+  socket.on("contact:added", () => socket.broadcast.emit("contacts:update"));
+
   socket.on("disconnect", () => {
     console.log("Socket.io disconnected");
     socket.emit("user-disconnected");

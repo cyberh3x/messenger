@@ -4,10 +4,12 @@ import useHttp from "./useHttp";
 import useToast from "./useToast";
 import {
   ADD_TO_CONTACTS,
+  REMOVE_CONTACT,
   STORE_CONTACTS,
   STORE_ROOM,
   STORE_SOCKET,
   TOGGLE_ADD_CONTACT_DIALOG,
+  TOGGLE_REMOVE_CONTACT_DIALOG,
   UPDATE_CONTACT_STATUS,
   UPDATE_CONVERSATIONS,
 } from "constants/actionsTypes";
@@ -15,9 +17,19 @@ import { CONTACTS, CONVERSATION, USER } from "constants/routes";
 
 const useSocket = () => {
   const [pending, setPending] = useState(false),
-    [{ room, socket, contact, contacts, addContactDialogIsOpen }, dispatch] =
-      useMessenger(),
-    { _post, _get } = useHttp(),
+    [
+      {
+        room,
+        socket,
+        contact,
+        contacts,
+        addContactDialogIsOpen,
+        removeContactDialogIsOpen,
+        selectedContactForRemove,
+      },
+      dispatch,
+    ] = useMessenger(),
+    { _post, _get, _delete } = useHttp(),
     { generate } = useToast(),
     storeSocket = (socketIo) =>
       dispatch({ type: STORE_SOCKET, payload: socketIo }),
@@ -41,9 +53,14 @@ const useSocket = () => {
             url: CONVERSATION.replace(":id", contact.roomId),
             state: contact._id,
           };
+          contact.menu = () => generateContactMenu(contact._id);
           dispatch({ type: ADD_TO_CONTACTS, payload: contact });
           generate(message);
+          socket.emit("contact:added");
         })
+        .catch((error) =>
+          handleError("Failed to add contact, Try again later.", error)
+        )
         .finally(() => setPending(false));
     },
     getContacts = async () => {
@@ -56,12 +73,57 @@ const useSocket = () => {
               url: CONVERSATION.replace(":id", contact.roomId),
               state: contact._id,
             },
+            menu: () => generateContactMenu(contact._id),
           }));
           dispatch({ type: STORE_CONTACTS, payload: data });
         })
+        .catch((error) =>
+          handleError("Failed to load contacts, Try again later.", error)
+        )
         .finally(() => setPending(false));
     },
-    handleToggleAddDialog = () => dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG });
+    generateContactMenu = (contactId) => [
+      {
+        id: 1,
+        label: "Delete contact",
+        props: {
+          onClick: () => handleToggleRemoveContactDialog(contactId),
+        },
+      },
+    ],
+    removeContact = async () => {
+      setPending(true);
+      await _delete(`${USER}${CONTACTS}`, { id: selectedContactForRemove })
+        .then(({ data: { message } }) => {
+          generate(message);
+          removeContactFromStore(selectedContactForRemove);
+          handleToggleRemoveContactDialog();
+          socket.emit("contact:removed");
+        })
+        .catch((error) =>
+          handleError("Failed to rmeove contact, Try again later!", error)
+        )
+        .finally(() => setPending(false));
+    },
+    removeContactFromStore = (contactId) =>
+      dispatch({ type: REMOVE_CONTACT, payload: contactId }),
+    handleError = (
+      message,
+      {
+        response: {
+          data: { message: serverMessage },
+          status,
+        },
+      }
+    ) => {
+      console.error({ message: serverMessage, status });
+      generate(serverMessage ? serverMessage : message, "error");
+    },
+    handleToggleAddContactDialog = () =>
+      dispatch({ type: TOGGLE_ADD_CONTACT_DIALOG }),
+    handleToggleRemoveContactDialog = (contactId) =>
+      dispatch({ type: TOGGLE_REMOVE_CONTACT_DIALOG, payload: contactId });
+
   return {
     room,
     socket,
@@ -69,13 +131,18 @@ const useSocket = () => {
     contacts,
     pending,
     addContactDialogIsOpen,
+    removeContactDialogIsOpen,
+    selectedContactForRemove,
     storeSocket,
     storeRoom,
     updateConversations,
     updateContactStatus,
     addContact,
+    removeContact,
     getContacts,
-    handleToggleAddDialog,
+    handleToggleAddContactDialog,
+    handleToggleRemoveContactDialog,
+    removeContactFromStore,
   };
 };
 

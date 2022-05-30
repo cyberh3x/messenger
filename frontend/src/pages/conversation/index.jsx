@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Typography from "components/typography";
 import Online from "components/flags/online";
+import CircularProgress from "components/progress/circular";
 
 const Conversation = () => {
   const { id } = useParams(),
@@ -68,14 +69,7 @@ const Conversation = () => {
 
   return (
     <AppLayout sidebar={<Sidebar />}>
-      {socket ? (
-        <>
-          {/* <Header contact={contact} /> */}
-          <Body />
-        </>
-      ) : (
-        <h1>Loading...</h1>
-      )}
+      {socket ? <Body /> : <CircularProgress />}
     </AppLayout>
   );
 };
