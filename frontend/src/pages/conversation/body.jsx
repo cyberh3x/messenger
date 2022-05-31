@@ -61,12 +61,14 @@ const Body = () => {
     messageInputRef = useRef(null),
     handleSendMessage = (e) => {
       e.preventDefault();
-      socket.emit("new:message", {
-        room,
-        message,
-        user,
-      });
-      setMessage("");
+      if (message) {
+        socket.emit("new:message", {
+          room,
+          message,
+          user,
+        });
+        setMessage("");
+      }
     },
     handleMessage = ({ target: { value } }) => setMessage(value),
     scrollToBottom = (withTimeout = true, timeout = 100) => {
