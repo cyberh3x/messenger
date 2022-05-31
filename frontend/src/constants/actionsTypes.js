@@ -1,2 +1,12 @@
 export const STORE_USER = "store_user";
 export const CHANGE_TAB = "change_tab";
+export const STORE_CONTACTS = "store_contacts";
+export const ADD_TO_CONTACTS = "add_to_contacts";
+export const TOGGLE_ADD_CONTACT_DIALOG = "toggle_add_contact_dialog";
+export const STORE_ROOM = "store_room";
+export const UPDATE_CONVERSATIONS = "update_conversations";
+export const STORE_SOCKET = "store_socket";
+export const LOGOUT = "logout";
+export const UPDATE_CONTACT_STATUS = "update_contact_status";
+export const TOGGLE_REMOVE_CONTACT_DIALOG = "toggle_remove_contact_dialog";
+export const REMOVE_CONTACT = "REMOVE_CONTACT";

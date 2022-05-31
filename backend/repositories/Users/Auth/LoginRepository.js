@@ -2,20 +2,17 @@ const { TOKEN_KEY } = require("../../../constants");
 const users = require("../../../models/users/Users"),
   jwt = require("jsonwebtoken"),
   { decrypt } = require("../../../utils/encryption"),
-  loginSchema = require("../../../schema/auth/loginScema");
+  loginSchema = require("../../../schema/auth/loginScema"),
+  { io } = require("../../../socket");
 
 class LoginRepository {
-  constructor(model) {
-    this.model = model;
-  }
-
   async login(body, res) {
     return await loginSchema
       .validate(body, { abortEarly: false })
       .then(async ({ username, password }) => {
         try {
-          const user = await this.model
-            .findOne({ username }, null)
+          const user = await users
+            .findOneAndUpdate({ username }, { status: 1 }, { new: true })
             .select("+password")
             .exec();
           if (!user)
@@ -29,8 +26,8 @@ class LoginRepository {
               message: "Unauthorized.",
               status: 401,
             };
-          delete user._doc.password;
-          const accessToken = jwt.sign(user._doc, process.env.JWT_SEC, {
+          delete user.password;
+          const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SEC, {
             expiresIn: "3d",
           });
           res.cookie(TOKEN_KEY, accessToken);
@@ -46,4 +43,4 @@ class LoginRepository {
   }
 }
 
-module.exports = new LoginRepository(users);
+module.exports = new LoginRepository();

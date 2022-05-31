@@ -1,8 +1,26 @@
 const { encrypt } = require("../../utils/encryption");
 
 const mongoose = require("mongoose"),
+  ContactsSchema = new mongoose.Schema({
+    contactId: {
+      type: String,
+      required: true,
+    },
+    roomId: {
+      type: String,
+      required: true,
+    },
+  }),
   UserSchema = new mongoose.Schema(
     {
+      firstName: {
+        type: String,
+        default: null,
+      },
+      lastName: {
+        type: String,
+        default: null,
+      },
       username: {
         type: String,
         required: true,
@@ -14,6 +32,11 @@ const mongoose = require("mongoose"),
         required: true,
         select: false,
         set: onSetPassword,
+      },
+      contacts: [ContactsSchema],
+      status: {
+        type: Number,
+        default: 0,
       },
     },
     { timestamps: true }

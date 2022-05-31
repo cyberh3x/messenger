@@ -3,7 +3,9 @@ const API = "/api",
   LOGIN = "/login",
   REGISTER = "/register",
   IDENTITY = "/identity",
-  LOGOUT = "/logout";
+  LOGOUT = "/logout",
+  USER = "/user",
+  CONTACTS = "/contacts";
 
 module.exports = {
   API,
@@ -11,5 +13,7 @@ module.exports = {
   LOGIN,
   REGISTER,
   IDENTITY,
-  LOGOUT
+  LOGOUT,
+  USER,
+  CONTACTS,
 };

@@ -1,19 +1,59 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router";
 import { createTheme } from "@mui/material";
+import { io } from "socket.io-client";
+import useSocket from "hooks/useSocket";
+import useUser from "hooks/useUser";
+import useToast from "hooks/useToast";
 import ThemeProvider from "@mui/system/ThemeProvider";
 import AuthRoute from "utils/authRoute";
 import Home from "./home";
-import { theme } from "constants/theme";
-import { CONVERSATION, HOME, SIGN_IN, SIGN_UP } from "constants/routes";
 import GuestRoute from "utils/guestRoute";
 import SignIn from "./auth/signIn";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import SignUp from "./auth/signUp";
 import Conversation from "./conversation";
+import Contacts from "./contacts";
+import {
+  CONTACTS,
+  CONVERSATION,
+  HOME,
+  SIGN_IN,
+  SIGN_UP,
+} from "constants/routes";
+import { theme } from "constants/theme";
 
 const AppRoot = () => {
-  const muiTheme = createTheme(theme);
+  const muiTheme = createTheme(theme),
+    { storeSocket, updateConversations, updateContactStatus, getContacts } =
+      useSocket(),
+    { generate } = useToast();
+
+  useEffect(() => {
+    const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
+    storeSocket(socketIo);
+
+    socketIo.on("message:saved", ({ room }) => {
+      updateConversations(room.conversations);
+    });
+
+    socketIo.on("message:sent", ({ room }) => {
+      updateConversations(room.conversations);
+    });
+
+    socketIo.on("user:online", ({ user }) => updateContactStatus(user));
+
+    socketIo.on("user:offline", ({ user }) => updateContactStatus(user));
+
+    socketIo.on("contacts:update", getContacts);
+
+    socketIo.on("message:failed", ({ error }) => {
+      console.error(error);
+      generate("Failed to send message");
+    });
+
+    return () => socketIo.close();
+  }, []);
+
   return (
     <ThemeProvider theme={muiTheme}>
       <Routes>
@@ -43,6 +83,15 @@ const AppRoot = () => {
           }
         />
         <Route
+          path={CONTACTS}
+          element={
+            <AuthRoute>
+              <Contacts />
+            </AuthRoute>
+          }
+        />
+        \{" "}
+        <Route
           path={CONVERSATION}
           element={
             <AuthRoute>
@@ -52,7 +101,6 @@ const AppRoot = () => {
         />
         <Route path="*" element={<h1>Not found</h1>} />
       </Routes>
-      <ToastContainer position="bottom-right" theme="dark" />
     </ThemeProvider>
   );
 };

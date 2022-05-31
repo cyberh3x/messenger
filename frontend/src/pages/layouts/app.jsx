@@ -1,11 +1,9 @@
-import { useMessenger } from "context/messenger/messengerProvider";
-import Box from "@mui/material/Box";
-import useClasses from "hooks/useClasses";
+import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import List from "components/list";
+import Box from "@mui/material/Box";
 import Sidebar from "./sidebar";
+import useClasses from "hooks/useClasses";
 import { CONVERSATION } from "constants/routes";
-import { Container } from "@mui/material";
 
 const styles = (theme) => ({
   root: {
@@ -70,9 +68,8 @@ const menuItems = [
     },
   ];
 
-const AppLayout = ({ children }) => {
-  const classes = useClasses(styles),
-    [{ tab }] = useMessenger();
+const AppLayout = ({ children, sidebar }) => {
+  const classes = useClasses(styles);
 
   return (
     <Grid item xs={12} className={classes.root}>
@@ -82,13 +79,13 @@ const AppLayout = ({ children }) => {
           <Container maxWidth="xl">
             <Grid container spacing={3} px={3}>
               <Grid item xs={12} md={4}>
-                <Box bgcolor={"white"} borderRadius={3} boxShadow={1}>
-                  {tab == 0 && <List items={conversations} />}
-                  {tab == 1 && tab}
-                  {tab == 2 && tab}
-                </Box>
+                {sidebar && (
+                  <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
+                    {sidebar}
+                  </Box>
+                )}
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={sidebar ? 8 : 12}>
                 {children}
               </Grid>
             </Grid>

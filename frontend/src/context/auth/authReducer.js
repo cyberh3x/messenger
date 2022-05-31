@@ -1,4 +1,4 @@
-import { STORE_USER } from "constants/actionsTypes";
+import { LOGOUT, STORE_USER } from "constants/actionsTypes";
 
 const AuthReducer = (state, { type, payload }) => {
   switch (type) {
@@ -7,6 +7,13 @@ const AuthReducer = (state, { type, payload }) => {
         ...state,
         user: payload,
         isLoggedIn: true,
+      };
+    case LOGOUT:
+      return {
+        user: {},
+        isLoggedIn: false,
+        addContactDialogIsOpen: false,
+        contacts: [],
       };
     default:
       return {

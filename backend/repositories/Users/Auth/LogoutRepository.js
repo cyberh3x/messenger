@@ -1,10 +1,15 @@
-const { TOKEN_KEY } = require("../../../constants");
+const users = require("../../../models/users/Users"),
+  { io } = require("../../../socket"),
+  { TOKEN_KEY } = require("../../../constants");
 
 class LogoutRepository {
   async logout(req, res) {
     try {
       const token = req.cookies?.token;
       if (token) {
+        const user = await users
+          .findOneAndUpdate({ _id: req.user._id }, { status: 0 }, { new: true })
+          .exec();
         delete req.user;
         res.clearCookie(TOKEN_KEY);
         return {

@@ -5,16 +5,20 @@ import ListItem from "@mui/material/ListItem";
 
 const AlertBox = ({ items = [], title = "" }) => {
   return (
-    <Alert severity="error">
-      <AlertTitle>{title}</AlertTitle>
-      <List>
-        {items.map((item, index) => (
-          <ListItem key={index}>
-            <strong>{item}</strong>
-          </ListItem>
-        ))}
-      </List>
-    </Alert>
+    <>
+      {Object.keys(items).length > 0 && (
+        <Alert severity="error">
+          <AlertTitle>{title}</AlertTitle>
+          <List>
+            {items.map((item, index) => (
+              <ListItem key={index}>
+                <strong>{item}</strong>
+              </ListItem>
+            ))}
+          </List>
+        </Alert>
+      )}
+    </>
   );
 };
 

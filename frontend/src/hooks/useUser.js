@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useSocket from "./useSocket";
 import { useAuth } from "context/auth/authProvider";
 import { useNavigate } from "react-router-dom";
 import useHttp from "./useHttp";
@@ -13,13 +14,15 @@ import {
   REGISTER,
   SIGN_IN,
 } from "constants/routes";
-import { STORE_USER } from "constants/actionsTypes";
+import { STORE_USER, LOGOUT as LOGOUT_ACTION } from "constants/actionsTypes";
 import { TOKEN_KEY } from "constants";
 
 const useUser = () => {
   const [pending, setPending] = useState(false),
-    [{ user, isLoggedIn }, dispatch] = useAuth(),
+    [{ user, isLoggedIn, contacts, addContactDialogIsOpen }, dispatch] =
+      useAuth(),
     { _get, _put, _post } = useHttp(),
+    { socket } = useSocket(),
     navigate = useNavigate(),
     { generate } = useToast(),
     login = async (credentials) => {
@@ -30,6 +33,7 @@ const useUser = () => {
             setCookie(TOKEN_KEY, user.accessToken);
             delete user.accessToken;
             store(user);
+            socket.emit("user:online", { user });
             navigate(HOME);
           })
           .finally(() => setPending(false));
@@ -52,14 +56,29 @@ const useUser = () => {
         .catch(logout);
     },
     logout = async () => {
-      deleteCookie(TOKEN_KEY);
-      _put(`${AUTH}${LOGOUT}`).finally(() => navigate(SIGN_IN));
+      await _put(`${AUTH}${LOGOUT}`).finally(() => {
+        deleteCookie(TOKEN_KEY);
+        user.status = 0;
+        socket.emit("user:offline", { user });
+        dispatch({ type: LOGOUT_ACTION });
+        navigate(SIGN_IN);
+      });
     },
     store = (payload) => {
       dispatch({ type: STORE_USER, payload });
     };
 
-  return { login, register, verifyToken, user, isLoggedIn, pending };
+  return {
+    login,
+    register,
+    verifyToken,
+    logout,
+    user,
+    isLoggedIn,
+    pending,
+    contacts,
+    addContactDialogIsOpen,
+  };
 };
 
 export default useUser;
