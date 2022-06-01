@@ -12,6 +12,7 @@ import {
 } from "constants/actionsTypes";
 
 const MessengerProvider = (state, { type, payload }) => {
+  console.log({ type, payload });
   switch (type) {
     case CHANGE_TAB:
       return {
@@ -33,10 +34,15 @@ const MessengerProvider = (state, { type, payload }) => {
         },
       };
     case STORE_SOCKET:
-      return {
-        ...state,
-        socket: payload,
-      };
+      if (!state.socket)
+        return {
+          ...state,
+          socket: payload,
+        };
+      else
+        return {
+          ...state,
+        };
     case UPDATE_CONTACT_STATUS:
       const contact = state.contact,
         contacts = state.contacts;

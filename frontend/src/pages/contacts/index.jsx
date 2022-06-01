@@ -10,8 +10,13 @@ import CircularProgress from "components/progress/circular";
 import RemoveContact from "./remove";
 
 const Contacts = () => {
-  const { getContacts, handleToggleAddContactDialog, pending, contacts } =
-      useSocket(),
+  const {
+      socket,
+      getContacts,
+      handleToggleAddContactDialog,
+      pending,
+      contacts,
+    } = useSocket(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -42,6 +47,7 @@ const Contacts = () => {
     );
 
   useEffect(() => {
+    console.count("Render");
     getContacts();
   }, []);
 

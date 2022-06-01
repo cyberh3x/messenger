@@ -1,9 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router";
 import { createTheme } from "@mui/material";
 import { io } from "socket.io-client";
 import useSocket from "hooks/useSocket";
-import useUser from "hooks/useUser";
 import useToast from "hooks/useToast";
 import ThemeProvider from "@mui/system/ThemeProvider";
 import AuthRoute from "utils/authRoute";
@@ -24,35 +23,41 @@ import { theme } from "constants/theme";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme),
-    { storeSocket, updateConversations, updateContactStatus, getContacts } =
-      useSocket(),
+    [socket, setSocket] = useState({}),
+    { updateConversations, updateContactStatus, getContacts } = useSocket(),
     { generate } = useToast();
 
   useEffect(() => {
     const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
-    storeSocket(socketIo);
+    setSocket(socketIo);
+    return () => {
+      setSocket({});
+      socketIo.close();
+    };
+  }, [setSocket]);
 
-    socketIo.on("message:saved", ({ room }) => {
-      updateConversations(room.conversations);
-    });
+  useEffect(() => {
+    if (socket && socket.connected) {
+      socket.on("message:saved", ({ room }) => {
+        updateConversations(room.conversations);
+      });
 
-    socketIo.on("message:sent", ({ room }) => {
-      updateConversations(room.conversations);
-    });
+      socket.on("message:sent", ({ room }) => {
+        updateConversations(room.conversations);
+      });
 
-    socketIo.on("user:online", ({ user }) => updateContactStatus(user));
+      socket.on("user:online", ({ user }) => updateContactStatus(user));
 
-    socketIo.on("user:offline", ({ user }) => updateContactStatus(user));
+      socket.on("user:offline", ({ user }) => updateContactStatus(user));
 
-    socketIo.on("contacts:update", getContacts);
+      socket.on("contacts:update", getContacts);
 
-    socketIo.on("message:failed", ({ error }) => {
-      console.error(error);
-      generate("Failed to send message");
-    });
-
-    return () => socketIo.close();
-  }, []);
+      socket.on("message:failed", ({ error }) => {
+        console.error(error);
+        generate("Failed to send message");
+      });
+    }
+  }, [socket]);
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -90,7 +95,6 @@ const AppRoot = () => {
             </AuthRoute>
           }
         />
-        \{" "}
         <Route
           path={CONVERSATION}
           element={

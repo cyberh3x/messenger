@@ -1,6 +1,7 @@
 import { LOGOUT, STORE_USER } from "constants/actionsTypes";
 
 const AuthReducer = (state, { type, payload }) => {
+  console.log({ type, payload });
   switch (type) {
     case STORE_USER:
       return {

@@ -1,8 +1,8 @@
 const { createServer } = require("http"),
   { Server } = require("socket.io"),
   RoomsRepository = require("./repositories/Rooms/RoomsRepository"),
-  ConversationsRepository = require("./repositories/Conversations/ConversationsRepository");
-const { _ENV } = require("./constants");
+  ConversationsRepository = require("./repositories/Conversations/ConversationsRepository"),
+  { _ENV } = require("./constants");
 
 const httpServer = createServer();
 httpServer.listen(_ENV.SOCKET_IO_PORT);

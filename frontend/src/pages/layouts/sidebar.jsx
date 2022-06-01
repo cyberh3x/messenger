@@ -8,7 +8,6 @@ import Box from "@mui/system/Box";
 import SidebarTabs from "./tabs";
 import IconButton from "components/button/iconButton";
 import { HOME } from "constants/routes";
-import { CHANGE_TAB } from "constants/actionsTypes";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
@@ -37,9 +36,7 @@ const styles = (theme) => ({
 const Sidebar = ({}) => {
   const classes = useClasses(styles),
     [sidebarIsOpen, setSidebarIsOpen] = useState(true),
-    [{ tab }, dispatch] = useMessenger(),
-    handleChange = (event, newValue) =>
-      dispatch({ type: CHANGE_TAB, payload: newValue }),
+    [{ tab }] = useMessenger(),
     handleSidebar = () => setSidebarIsOpen(!sidebarIsOpen);
   return (
     <div className={classes.root}>
@@ -53,7 +50,7 @@ const Sidebar = ({}) => {
           <Box my={3}>
             <hr />
           </Box>
-          <SidebarTabs handleChange={handleChange} tab={tab} />
+          <SidebarTabs tab={tab} />
         </div>
       ) : (
         <></>

@@ -1,23 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
+import useUser from "hooks/useUser";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import ContactPageIcon from "@mui/icons-material/ContactPage";
-import { CONTACTS } from "constants/routes";
 import LogoutIcon from "@mui/icons-material/Logout";
 import IconButton from "components/button/iconButton";
-import useUser from "hooks/useUser";
+import { CONTACTS } from "constants/routes";
+import ContactPageIcon from "@mui/icons-material/ContactPage";
 
 const SidebarTabs = ({ handleChange, tab }) => {
   const { pathname } = useLocation(),
     { logout } = useUser();
   return (
     <>
-      <Tabs
-        value={tab}
-        onChange={handleChange}
-        aria-label="icon tabs example"
-        orientation="vertical"
-      >
+      <Tabs value={tab} aria-label="icon tabs example" orientation="vertical">
         <Tab
           icon={
             <Link to={CONTACTS}>

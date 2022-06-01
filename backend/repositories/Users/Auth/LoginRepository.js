@@ -2,8 +2,7 @@ const { TOKEN_KEY } = require("../../../constants");
 const users = require("../../../models/users/Users"),
   jwt = require("jsonwebtoken"),
   { decrypt } = require("../../../utils/encryption"),
-  loginSchema = require("../../../schema/auth/loginScema"),
-  { io } = require("../../../socket");
+  loginSchema = require("../../../schema/auth/loginScema");
 
 class LoginRepository {
   async login(body, res) {

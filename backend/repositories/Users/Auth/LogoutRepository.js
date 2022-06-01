@@ -1,5 +1,4 @@
 const users = require("../../../models/users/Users"),
-  { io } = require("../../../socket"),
   { TOKEN_KEY } = require("../../../constants");
 
 class LogoutRepository {

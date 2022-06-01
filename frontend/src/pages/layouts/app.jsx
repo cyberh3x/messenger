@@ -26,48 +26,6 @@ const styles = (theme) => ({
   },
 });
 
-const menuItems = [
-    {
-      id: 1,
-      label: "Profile",
-      props: {
-        onClick: () => console.log("Profile"),
-      },
-    },
-    {
-      id: 2,
-      label: "Logout",
-      props: {
-        onClick: () => console.log("Logout"),
-      },
-    },
-  ],
-  conversations = [
-    {
-      id: 1,
-      username: "Sajjad",
-      isOnline: false,
-      text: "Hello Sajjad",
-      menu: [
-        {
-          id: 1,
-          label: "Delete Conversation",
-          props: {
-            onClick: () => console.log("Delete Conversation"),
-          },
-        },
-      ],
-      href: CONVERSATION.replace(":id", 1),
-    },
-    {
-      id: 2,
-      username: "Ali",
-      isOnline: true,
-      text: "Hello Ali",
-      href: CONVERSATION.replace(":id", 2),
-    },
-  ];
-
 const AppLayout = ({ children, sidebar }) => {
   const classes = useClasses(styles);
 
