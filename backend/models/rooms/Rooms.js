@@ -13,14 +13,6 @@ const { generate } = require("../../utils/uuid"),
         type: String,
         required: true,
       },
-      replyTo: {
-        type: String,
-        default: null,
-      },
-      status: {
-        type: Number,
-        default: 0,
-      },
     },
     { timestamps: true }
   ),

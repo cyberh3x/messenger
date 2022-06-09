@@ -31,8 +31,7 @@ const useSocket = () => {
     ] = useMessenger(),
     { _post, _get, _delete } = useHttp(),
     { generate } = useToast(),
-    storeSocket = (socketIo) =>
-      dispatch({ type: STORE_SOCKET, payload: socketIo }),
+    storeSocket = (socket) => dispatch({ type: STORE_SOCKET, payload: socket }),
     storeRoom = (room = [], contact = {}) => {
       dispatch({ type: STORE_ROOM, payload: { room, contact } });
     },

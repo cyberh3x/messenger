@@ -1,11 +1,11 @@
 import React, { useContext, useReducer } from "react";
-import AppReducer from "context/messenger/messengerReducer";
+import MessengerReducer from "context/messenger/messengerReducer";
 import MessengerState from "context/messenger/messengerState";
 
 const MessengerContext = React.createContext();
 
 const MessengerProvider = ({ children }) => {
-  const contextValue = useReducer(AppReducer, MessengerState);
+  const contextValue = useReducer(MessengerReducer, MessengerState);
   return (
     <MessengerContext.Provider value={contextValue}>
       {children}

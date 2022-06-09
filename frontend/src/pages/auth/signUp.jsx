@@ -34,7 +34,6 @@ const SignUp = () => {
       e.preventDefault();
       setErrors({});
       const credentials = { username, password };
-      console.log(credentials);
       await signUpSchema
         .validate(credentials, { abortEarly: false })
         .then(

@@ -24,7 +24,10 @@ mongoose
   .catch((error) => console.log(error));
 
 app.use(
-  cors({ credentials: true, origin: _ENV.CLIENT_URL }),
+  cors({
+    credentials: true,
+    origin: _ENV.CLIENT_URL || "http://localhost:3002",
+  }),
   function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", _ENV.CLIENT_URL);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

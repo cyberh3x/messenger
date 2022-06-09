@@ -2,8 +2,7 @@ const { TOKEN_KEY } = require("../../../constants");
 const users = require("../../../models/users/Users"),
   jwt = require("jsonwebtoken"),
   { decrypt } = require("../../../utils/encryption"),
-  loginSchema = require("../../../schema/auth/loginScema"),
-  { io } = require("../../../socket");
+  loginSchema = require("../../../schema/auth/loginScema");
 
 class LoginRepository {
   async login(body, res) {
@@ -17,13 +16,15 @@ class LoginRepository {
             .exec();
           if (!user)
             throw {
-              message: "User not found.",
+              message: "Unauthorized.",
+              errors: ["User not found."],
               status: 401,
             };
           const storedPassword = decrypt(user.password);
           if (storedPassword !== password)
             throw {
               message: "Unauthorized.",
+              errors: ["Invalid password."],
               status: 401,
             };
           delete user.password;

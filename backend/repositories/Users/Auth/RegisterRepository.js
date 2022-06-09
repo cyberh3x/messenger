@@ -1,5 +1,4 @@
 const users = require("../../../models/users/Users"),
-  { encrypt } = require("../../../utils/encryption"),
   registerSchema = require("../../../schema/auth/registerSchema");
 
 class RegisterRepository {

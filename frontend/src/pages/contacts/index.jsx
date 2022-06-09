@@ -8,6 +8,7 @@ import AddContact from "./add";
 import AppLayout from "pages/layouts/app";
 import CircularProgress from "components/progress/circular";
 import RemoveContact from "./remove";
+import ImageBox from "components/box/imageBox";
 
 const Contacts = () => {
   const { getContacts, handleToggleAddContactDialog, pending, contacts } =
@@ -45,7 +46,14 @@ const Contacts = () => {
     getContacts();
   }, []);
 
-  return <AppLayout sidebar={<Sidebar />}></AppLayout>;
+  return (
+    <AppLayout sidebar={<Sidebar />}>
+      <ImageBox
+        image="/assets/images/contacts.svg"
+        imageProps={{ alt: "Contacts", title: "Contacts" }}
+      />
+    </AppLayout>
+  );
 };
 
 export default Contacts;
