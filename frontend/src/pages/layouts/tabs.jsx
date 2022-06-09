@@ -7,7 +7,7 @@ import IconButton from "components/button/iconButton";
 import { CONTACTS } from "constants/routes";
 import ContactPageIcon from "@mui/icons-material/ContactPage";
 
-const SidebarTabs = ({ handleChange, tab }) => {
+const SidebarTabs = ({ tab }) => {
   const { pathname } = useLocation(),
     { logout } = useUser();
   return (

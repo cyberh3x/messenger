@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 
 const useClasses = (stylesElement) => {
   const theme = useTheme();
+
   return useMemo(() => {
     const rawClasses =
       typeof stylesElement === "function"

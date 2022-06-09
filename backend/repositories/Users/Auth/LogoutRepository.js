@@ -6,7 +6,7 @@ class LogoutRepository {
     try {
       const token = req.cookies?.token;
       if (token) {
-        const user = await users
+        await users
           .findOneAndUpdate({ _id: req.user._id }, { status: 0 }, { new: true })
           .exec();
         delete req.user;

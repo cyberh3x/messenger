@@ -23,13 +23,16 @@ import { theme } from "constants/theme";
 
 const AppRoot = () => {
   const muiTheme = createTheme(theme),
-    [socket, setSocket] = useState({}),
-    { updateConversations, updateContactStatus, getContacts } = useSocket(),
+    [socket, setSocket] = useState(undefined),
+    { storeSocket, updateConversations, updateContactStatus, getContacts } =
+      useSocket(),
     { generate } = useToast();
 
   useEffect(() => {
     const socketIo = io(process.env.REACT_APP_SOCKET_IO_SERVER_ENDPOINT);
+    socketIo.connect();
     setSocket(socketIo);
+    storeSocket(socketIo);
     return () => {
       setSocket({});
       socketIo.close();
@@ -37,7 +40,7 @@ const AppRoot = () => {
   }, [setSocket]);
 
   useEffect(() => {
-    if (socket && socket.connected) {
+    if (socket) {
       socket.on("message:saved", ({ room }) => {
         updateConversations(room.conversations);
       });

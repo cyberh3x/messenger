@@ -31,6 +31,7 @@ const useSocket = () => {
     ] = useMessenger(),
     { _post, _get, _delete } = useHttp(),
     { generate } = useToast(),
+    storeSocket = (socket) => dispatch({ type: STORE_SOCKET, payload: socket }),
     storeRoom = (room = [], contact = {}) => {
       dispatch({ type: STORE_ROOM, payload: { room, contact } });
     },
@@ -131,6 +132,7 @@ const useSocket = () => {
     addContactDialogIsOpen,
     removeContactDialogIsOpen,
     selectedContactForRemove,
+    storeSocket,
     storeRoom,
     updateConversations,
     updateContactStatus,

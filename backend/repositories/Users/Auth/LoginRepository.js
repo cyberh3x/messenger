@@ -16,13 +16,15 @@ class LoginRepository {
             .exec();
           if (!user)
             throw {
-              message: "User not found.",
+              message: "Unauthorized.",
+              errors: ["User not found."],
               status: 401,
             };
           const storedPassword = decrypt(user.password);
           if (storedPassword !== password)
             throw {
               message: "Unauthorized.",
+              errors: ["Invalid password."],
               status: 401,
             };
           delete user.password;

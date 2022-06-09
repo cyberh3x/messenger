@@ -7,17 +7,22 @@ const verifyToken = (req, res, next) => {
     errorMessage = {
       message: "Unauthorized.",
       error: unauthorizedStatus,
-    };
-  let token = req.cookies[TOKEN_KEY] ?? null;
+    },
+    clearCookie = () => res.clearCookie(TOKEN_KEY);
+  let token = req.cookies?.token ?? null;
   if (token) {
     token = `Bearer ${token}`;
     jwt.verify(token.split(" ")[1], process.env.JWT_SEC, async (err, user) => {
-      if (err) res.status(unauthorizedStatus).json(errorMessage);
-      req.user = await usersModel.findById(user._id).exec();
+      if (err) {
+        clearCookie();
+        res.status(unauthorizedStatus).json(errorMessage);
+      }
+      req.user = await usersModel.findById(user?._id).exec();
       next();
     });
   } else {
-    res.clearCookie(TOKEN_KEY);
+    delete req.user;
+    clearCookie();
     res.status(unauthorizedStatus).json(errorMessage);
   }
 };

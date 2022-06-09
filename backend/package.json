@@ -1,7 +1,7 @@
 {
-  "name": "ufo-messenger-backend",
+  "name": "messenger-backend",
   "version": "1.0.0",
-  "description": "Multipurpose messenger using React.js & Node.js - Runs on OS and Browser(Extension)",
+  "description": "Message App",
   "private": true,
   "main": "index.js",
   "scripts": {

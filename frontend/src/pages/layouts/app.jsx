@@ -1,9 +1,8 @@
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import Box from "components/box/index";
 import Sidebar from "./sidebar";
 import useClasses from "hooks/useClasses";
-import { CONVERSATION } from "constants/routes";
 
 const styles = (theme) => ({
   root: {
@@ -37,11 +36,7 @@ const AppLayout = ({ children, sidebar }) => {
           <Container maxWidth="xl">
             <Grid container spacing={3} px={3}>
               <Grid item xs={12} md={4}>
-                {sidebar && (
-                  <Box bgcolor={"white"} borderRadius={3} boxShadow={1} p={2}>
-                    {sidebar}
-                  </Box>
-                )}
+                {sidebar && <Box>{sidebar}</Box>}
               </Grid>
               <Grid item xs={12} md={sidebar ? 8 : 12}>
                 {children}

@@ -8,15 +8,11 @@ import AddContact from "./add";
 import AppLayout from "pages/layouts/app";
 import CircularProgress from "components/progress/circular";
 import RemoveContact from "./remove";
+import ImageBox from "components/box/imageBox";
 
 const Contacts = () => {
-  const {
-      socket,
-      getContacts,
-      handleToggleAddContactDialog,
-      pending,
-      contacts,
-    } = useSocket(),
+  const { getContacts, handleToggleAddContactDialog, pending, contacts } =
+      useSocket(),
     Sidebar = () => (
       <Grid item xs={12}>
         <Grid container alignItems="center">
@@ -47,11 +43,17 @@ const Contacts = () => {
     );
 
   useEffect(() => {
-    console.count("Render");
     getContacts();
   }, []);
 
-  return <AppLayout sidebar={<Sidebar />}></AppLayout>;
+  return (
+    <AppLayout sidebar={<Sidebar />}>
+      <ImageBox
+        image="/assets/images/contacts.svg"
+        imageProps={{ alt: "Contacts", title: "Contacts" }}
+      />
+    </AppLayout>
+  );
 };
 
 export default Contacts;

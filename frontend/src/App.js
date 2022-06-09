@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useUser from "hooks/useUser";
 import AppRoot from "pages";
 import { getCookie } from "utils/cookie";
@@ -12,15 +12,14 @@ function App() {
     token = getCookie(TOKEN_KEY),
     { verifyToken } = useUser(),
     render = () => (
-      <>
+      <React.Fragment>
         <AppRoot />
         <ToastContainer position="bottom-right" theme="dark" />
-      </>
+      </React.Fragment>
     );
 
   useEffect(() => {
-    return () =>
-      token ? verifyToken().then(() => setReady(true)) : setReady(true);
+    token ? verifyToken().then(() => setReady(true)) : setReady(true);
   }, []);
 
   return ready && render();
